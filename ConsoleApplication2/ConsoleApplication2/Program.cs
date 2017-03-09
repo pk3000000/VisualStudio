@@ -200,10 +200,20 @@ namespace ConsoleApplication2
             Console.WriteLine();
             */
             // merge sort
-            /*
+            
             int[] arr1 = new int[] { 3, 4, 7, 10, 15, 19, 23, 25, 26, 27 };
             int[] arr2 = new int[] { 1, 2, 5, 20, 28, 30, 31, 32, 33, 43 };
-            int[] arr3 = new int[20];
+            int[] arr3 = new int[20] { 3, 4, 7, 10, 15, 19, 23, 25, 26, 27, 1, 2, 5, 20, 28, 30, 31, 32, 33, 43 };
+
+            MergeSort(ref arr3, 0,arr3.Length/2, arr3.Length);
+
+            for(int i=0;i<arr3.Length;i++)
+            {
+                Console.Write("{0} ", arr3[i]);
+            }
+            Console.WriteLine();
+
+            /*
             int idx1 = 0;
             int idx2 = 0;
             
@@ -246,20 +256,22 @@ namespace ConsoleApplication2
             Console.WriteLine("{0},{1}", x, y);
             Swap(ref x, ref y);
             Console.WriteLine("{0},{1}", x, y);*/
-            
-            int[] score = new int[20] { 80, 74, 81, 90, 34, 84, 76, 95, 45, 66, 74, 82, 76, 57, 51, 88, 73, 98, 51, 60 };
 
-            Merge(ref score);
+            // int[] score = new int[20] { 80, 74, 81, 90, 34, 84, 76, 95, 45, 66, 74, 82, 76, 57, 51, 88, 73, 98, 51, 60 };
+
+            // Merge(ref score);
 
             //reverse(ref score);
 
-            
-            for (int i=0;i<20;i++)
+            /*
+            for (int i=0;i<score.Length;i++)
             {
                 Console.Write("{0} ",score[i]);
             }
             Console.WriteLine();
-            
+            */
+
+            //Hanoi(3, 'A', 'B', 'C');
 
             //Console.WriteLine(plus(1.2f,1.3f));
         }
@@ -304,6 +316,24 @@ namespace ConsoleApplication2
             }
         }
 
+        public static int fibo(int num)
+        {
+            if(num == 0)
+            {
+                return 0;
+            }
+            else if(num == 1)
+            {
+                return 1;
+            }
+            else if(num == 2)
+            {
+                return 1;
+            }
+
+            return fibo(num - 1) + fibo(num - 2);
+        }
+
         /*
         public static void Merge(ref int[] arr)
         {
@@ -324,24 +354,12 @@ namespace ConsoleApplication2
         }
         */
 
-        public static int fibo(int num)
+        public static void Merge(ref int[] arr)
         {
-            if(num == 0)
-            {
-                return 0;
-            }
-            else if(num == 1)
-            {
-                return 1;
-            }
-            else if(num == 2)
-            {
-                return 1;
-            }
 
-            return fibo(num - 1) + fibo(num - 2);
         }
 
+        /*
         public static void Merge(ref int[] arr)
         {
             int count = 0;
@@ -520,7 +538,8 @@ namespace ConsoleApplication2
                 Array.Copy(tempArr2[0], arr, arr.Length);
             }
         }
-
+        */
+        /*
         public static void MergeSort(ref int[] arr1, ref int[] arr2, ref int[] arr)
         {
             int idx1 = 0;
@@ -552,7 +571,45 @@ namespace ConsoleApplication2
                 }
             }
         }
+        */
 
+        public static void MergeSort(ref int[] arr, int left, int mid, int right)
+        {
+            int idx1 = 0;
+            int idx2 = 0;
+
+            int[] arr1 = new int[mid];
+            int[] arr2 = new int[right-mid];
+
+            Array.Copy(arr, 0, arr1, 0, mid);
+            Array.Copy(arr, mid, arr2, 0, right-mid);
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (idx1 != mid && idx2 != right-mid)
+                {
+                    if (arr1[idx1] < arr2[idx2])
+                    {
+                        arr[i] = arr1[idx1++];
+                    }
+                    else
+                    {
+                        arr[i] = arr2[idx2++];
+                    }
+                }
+                else
+                {
+                    if (idx1 < mid)
+                    {
+                        arr[i] = arr1[idx1++];
+                    }
+                    else
+                    {
+                        arr[i] = arr2[idx2++];
+                    }
+                }
+            }
+        }
         public static void SelectionSort(int[] arr)
         {
             int smallNum = 0;
@@ -577,10 +634,20 @@ namespace ConsoleApplication2
                 arr[smallIdx] = temp;
             }
         }
-
-        public static void HanoiTower(int num)
+        
+        public static void Hanoi(int num, char left, char mid, char right)
         {
-            
+            if(num == 1)
+            {
+                Console.WriteLine("1번을 {0}에서 {1}로 옮긴다",left,right);
+                return;
+            }
+            else
+            {
+                Hanoi(num - 1, left, right, mid);
+                Console.WriteLine("{0}을 {1}에서 {2}로 옮긴다", num, left, right);
+                Hanoi(num - 1, mid, left, right);
+            }
         }
     }
 }
