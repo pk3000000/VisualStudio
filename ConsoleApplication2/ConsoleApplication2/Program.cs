@@ -246,16 +246,39 @@ namespace ConsoleApplication2
             Console.WriteLine("{0},{1}", x, y);
             Swap(ref x, ref y);
             Console.WriteLine("{0},{1}", x, y);*/
+            
             int[] score = new int[20] { 80, 74, 81, 90, 34, 84, 76, 95, 45, 66, 74, 82, 76, 57, 51, 88, 73, 98, 51, 60 };
-            int length = score.Length;
 
             Merge(ref score);
+
+            //reverse(ref score);
+
             
-            for(int i=0;i<20;i++)
+            for (int i=0;i<20;i++)
             {
                 Console.Write("{0} ",score[i]);
             }
             Console.WriteLine();
+            
+
+            //Console.WriteLine(plus(1.2f,1.3f));
+        }
+
+        public static int plus(int a, int b)
+        {
+            return a + b;
+        }
+        public static long plus(long a, long b)
+        {
+            return a + b;
+        }
+        public static float plus(float a, float b)
+        {
+            return a + b;
+        }
+        public static double plus(double a, double b)
+        {
+            return a + b;
         }
 
         public static void Swap(ref int a, ref int b)
@@ -264,6 +287,23 @@ namespace ConsoleApplication2
             b = a;
             a = temp;
         }
+
+        public static void reverse(ref int[] arr)
+        {
+            int front = 0;
+            int rear = arr.Length - 1;
+
+            while(true)
+            {
+                Swap(ref arr[front++], ref arr[rear--]);
+
+                if(front >= rear)
+                {
+                    break;
+                }
+            }
+        }
+
         /*
         public static void Merge(ref int[] arr)
         {
@@ -283,6 +323,24 @@ namespace ConsoleApplication2
             MergeSort(ref first,ref last, ref arr);
         }
         */
+
+        public static int fibo(int num)
+        {
+            if(num == 0)
+            {
+                return 0;
+            }
+            else if(num == 1)
+            {
+                return 1;
+            }
+            else if(num == 2)
+            {
+                return 1;
+            }
+
+            return fibo(num - 1) + fibo(num - 2);
+        }
 
         public static void Merge(ref int[] arr)
         {
@@ -305,41 +363,162 @@ namespace ConsoleApplication2
             int i = 0;
             int[][] tempArr1;
             int[][] tempArr2;
-            int zegob = 1;
+            int zegob = 2;
+            bool bTemp = false;
 
             tempArr1 = new int[1][];
-            Array.Copy(arr, tempArr1, arr.Length);
+
+            tempArr1[0] = new int[arr.Length];
+
+            Array.Copy(arr, tempArr1[0], arr.Length);
 
             while (true)
             {
-                zegob = 1;
-
-                for(int j=0;j<=i;j++)
-                {
-                    zegob *= 2;
-                }
-                
                 tempArr2 = new int[zegob][];
 
-                for(int j=0;j<zegob/2;j+=2)
+                for(int j=0;j<zegob;j+=2)
                 {
-                    Array.Copy(tempArr1[j], 0, tempArr2[j], 0, tempArr1[j].Length / 2);
-                    Array.Copy(tempArr1[j], tempArr1.Length/2, tempArr2[j+1], 0, tempArr1[j].Length - tempArr1[j].Length / 2);
+                    tempArr2[j] = new int[tempArr1[j/2].Length / 2];
+                    Array.Copy(tempArr1[j / 2], 0, tempArr2[j], 0, tempArr1[j/2].Length / 2);
+
+                    if(tempArr2[j].Length == 2)
+                    {
+                        SelectionSort(tempArr2[j]);
+                    }
+
+                    tempArr2[j + 1] = new int[tempArr1[j/2].Length - tempArr1[j/2].Length / 2];
+                    Array.Copy(tempArr1[j / 2], tempArr1[j/2].Length / 2, tempArr2[j + 1], 0, tempArr1[j / 2].Length - tempArr1[j / 2].Length / 2);
+
+                    if (tempArr2[j].Length == 2)
+                    {
+                        SelectionSort(tempArr2[j+1]);
+                    }
+
                 }
 
-                break;
+                zegob *= 2;
                 i++;
-            }
 
-            for(int j = 0;j < tempArr2.Length;j++)
-            {
-                for(int k=0;k<tempArr2[j].Length;k++)
+                if(i == count)
                 {
-                    Console.Write(tempArr2[j][k]);
+                    bTemp = true;
+                    break;
+                }
+
+                tempArr1 = new int[zegob][];
+
+                for (int j = 0; j < zegob; j += 2)
+                {
+                    tempArr1[j] = new int[tempArr2[j/2].Length / 2];
+                    Array.Copy(tempArr2[j/2], 0, tempArr1[j], 0, tempArr2[j/2].Length / 2);
+
+                    if (tempArr1[j].Length == 2)
+                    {
+                        SelectionSort(tempArr1[j]);
+                    }
+
+                    tempArr1[j + 1] = new int[tempArr2[j/2].Length - tempArr2[j/2].Length / 2];
+                    Array.Copy(tempArr2[j/2], tempArr2[j / 2].Length / 2, tempArr1[j + 1], 0, tempArr2[j/2].Length - tempArr2[j/2].Length / 2);
+
+                    if (tempArr1[j].Length == 2)
+                    {
+                        SelectionSort(tempArr1[j + 1]);
+                    }
+                }
+
+                zegob *= 2;
+                i++;
+
+                if (i == count)
+                {
+                    break;
                 }
             }
-            Console.WriteLine();
-            //for(int i=0;)
+            
+            bTemp = false;
+            zegob /= 2;
+
+            if (bTemp)
+            {
+                while (true)
+                {
+                    zegob /= 2;
+
+                    tempArr2 = new int[zegob][];
+
+                    for (int j = 0; j < zegob; j++)
+                    {
+                        tempArr2[j] = new int[(tempArr1[j*2].Length + tempArr1[(j*2) + 1].Length) / 2];
+                        MergeSort(ref tempArr1[j*2], ref tempArr1[(j*2) + 1], ref tempArr2[j]);
+                    }
+
+                    if (zegob == 1)
+                    {
+                        break;
+                    }
+
+                    zegob /= 2;
+                    
+                    tempArr1 = new int[zegob][];
+
+                    for (int j = 0; j < zegob; j++)
+                    {
+                        tempArr1[j] = new int[(tempArr2[j*2].Length + tempArr2[(j*2) + 1].Length) / 2];
+                        MergeSort(ref tempArr2[j*2], ref tempArr2[(j*2) + 1], ref tempArr1[j]);
+                    }
+
+                    if (zegob == 1)
+                    {
+                        bTemp = true;
+                        break;
+                    }
+                }
+            }
+            else // check
+            {
+                while (true)
+                {
+                    zegob /= 2;
+                    
+                    tempArr1 = new int[zegob][];
+
+                    for (int j = 0; j < zegob; j++)
+                    {
+                        tempArr1[j] = new int[tempArr2[(j*2)].Length + tempArr2[(j*2) + 1].Length];
+                        MergeSort(ref tempArr2[(j*2)], ref tempArr2[(j*2) + 1], ref tempArr1[j]);
+                    }
+
+                    if (zegob == 1)
+                    {
+                        bTemp = true;
+                        break;
+                    }
+
+                    zegob /= 2;
+                    
+                    tempArr2 = new int[zegob][];
+
+                    for (int j = 0; j < zegob; j++)
+                    {
+                        tempArr2[j] = new int[tempArr1[(j*2)].Length + tempArr1[(j*2) + 1].Length];
+                        MergeSort(ref tempArr1[j*2], ref tempArr1[(j*2) + 1], ref tempArr2[j]);
+                    }
+
+                    if (zegob == 1)
+                    {
+                        break;
+                    }
+                }
+            }
+            
+            if(bTemp)
+            {
+                Array.Copy(tempArr1[0], arr, arr.Length);
+            }
+            else
+            {
+                Array.Copy(tempArr2[0], arr, arr.Length);
+            }
         }
 
         public static void MergeSort(ref int[] arr1, ref int[] arr2, ref int[] arr)
@@ -380,12 +559,12 @@ namespace ConsoleApplication2
             int smallIdx = 0;
             int temp = 0;
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < arr.Length; i++)
             {
                 smallNum = arr[i];
                 smallIdx = i;
 
-                for (int j = i; j < 20; j++)
+                for (int j = i; j < arr.Length; j++)
                 {
                     if (smallNum > arr[j])
                     {
@@ -399,5 +578,9 @@ namespace ConsoleApplication2
             }
         }
 
+        public static void HanoiTower(int num)
+        {
+            
+        }
     }
 }
