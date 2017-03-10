@@ -572,6 +572,15 @@ namespace ConsoleApplication2
             }
         }
         */
+        public static void Merge(ref int[] arr, int left, int mid, int right)
+        {
+            int length = arr.Length;
+
+            while(true)
+            {
+                
+            }
+        }
 
         public static void MergeSort(ref int[] arr, int left, int mid, int right)
         {
