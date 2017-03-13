@@ -69,8 +69,8 @@ namespace ConsoleApplication3
             //Console.WriteLine(Fel());
 
             //16.
-            //int[] numArr = new int[10] { 2, 1, 3, 5, 4, 6, 8, 7, 10, 9 };
-            //Console.WriteLine(NumberAndSort(ref numArr, 7));
+            int[] numArr = new int[10] { 2, 1, 3, 5, 4, 6, 8, 7, 10, 9 };
+            Console.WriteLine(NumberAndSort(numArr, 7));
 
             //17.
             //FoundAndMissing();
@@ -79,7 +79,7 @@ namespace ConsoleApplication3
             //Console.WriteLine("{0}번 다이아몬드",Mine());
 
             //19.
-            Square();
+            //Console.WriteLine("{0} ",Square());
         }
 
         // 1.
@@ -424,30 +424,30 @@ namespace ConsoleApplication3
         }
 
         //16.
-        public static void SelectionSort(ref int[] arr)
-        {
-            int length = arr.Length;
-            int temp = 0;
 
-            for(int i=0;i<length;i++)
+        public static int NumberAndSort(int[] arr, int k)
+        {
+            int count = 0;
+            
+            for (int i=0;i<arr.Length;i++)
             {
-                for(int j=i+1;j<length;j++)
+                count = 0;
+
+                for(int j=0;j<arr.Length;j++)
                 {
-                    if(arr[i] > arr[j])
+                    
+                    if(arr[i] >= arr[j])
                     {
-                        temp = arr[i];
-                        arr[i] = arr[j];
-                        arr[j] = temp;
+                        count++;
                     }
                 }
+                if (count == k)             // 끝까지 돈 뒤, 몇번째 수인지 확인하여 리턴해 줌.
+                {
+                    return arr[i];
+                }
             }
-        }
 
-        public static int NumberAndSort(ref int[] arr, int k)
-        {
-            SelectionSort(ref arr);
-
-            return arr[k-1];
+            return 0;
         }
 
         //17.
@@ -590,17 +590,17 @@ namespace ConsoleApplication3
 
             if(r * c >= 4)
             {
-                for (int i = 1; i < r - 1; i++)
+                for (int i = 0; i < r - 1; i++)
                 {
                     
-                    for (int j = 1; j < c - 1; j++)
+                    for (int j = 0; j < c - 1; j++)
                     {
                         count = 0;
-                        if (mine[i - 1, j] == 1)
+                        if (mine[i, j] == 1)
                         {
                             count++;
                         }
-                        if (mine[i, j - 1] == 1)
+                        if (mine[i, j + 1] == 1)
                         {
                             count++;
                         }
@@ -608,7 +608,7 @@ namespace ConsoleApplication3
                         {
                             count++;
                         }
-                        if (mine[i, j + 1] == 1)
+                        if (mine[i + 1, j + 1] == 1)
                         {
                             count++;
                         }
@@ -642,34 +642,60 @@ namespace ConsoleApplication3
         //19.
         public static int Square()
         {
-            int size = 0;
-            Console.Write("N,M 입력 : ");
-            string str = Console.ReadLine();
-            int n = Convert.ToInt32(str[0]+"");
-            int m = Convert.ToInt32(str[2]+"");
-            int[,] square = new int[m, n];
+            Console.Write("M,N 입력 : ");
+            string str = Console.ReadLine();            // M, N 한줄에 입력. M - row, N - column
+            int m = Convert.ToInt32(str[0]+"");
+            int n = Convert.ToInt32(str[2]+"");
+            int[,] square = new int[m, n];              // 입력 받을 사각형
             int[] s1, s2, s3, s4;
-            int round = (n * m) / 2 + 1;
 
-            int sero = m - 1;
-            int garo = n - 1;
+            int size = 0;
 
-            s1 = new int[2] { 0, 0 };
+            if(m > n)           // 체크할 모서리 길이의 최댓값
+            {
+                size = n;
+            }
+            else
+            {
+                size = m;
+            }
+
+            int sero = size - 1;    // check할 모서리의 길이
+            int garo = size - 1;    // 정사각형이라 같게.
+
+            s1 = new int[2] { 0, 0 };           // check할 꼭지점의 index
             s2 = new int[2] { 0, garo };
             s3 = new int[2] { sero, 0 };
             s4 = new int[2] { sero, garo };
-            
-            for(int i=0;i<round;i++)
+
+            Console.WriteLine("광산 입력 : ");
+
+            string[] squareStr = new string[m];
+
+            for (int i = 0; i < m; i++)         // 행 단위로 입력
             {
-                if(square[s1[0],s1[1]] == square[s2[0], s2[1]] && square[s2[0], s2[1]] == square[s3[0], s3[1]] && square[s4[0], s4[1]] == square[s4[0], s4[1]])
+                squareStr[i] = Console.ReadLine();
+            }
+            for (int i = 0; i < m; i++)         // int형으로 변환(다루기 쉽게)
+            {
+                for (int j = 0; j < n; j++)
                 {
-                    return (garo+1) * (sero+1);
+                    square[i, j] = Convert.ToInt32(squareStr[i][j] + "");
+                }
+            }
+
+            while(true)
+            {
+                if(square[s1[0],s1[1]] == square[s2[0], s2[1]] && square[s2[0], s2[1]] == square[s3[0], s3[1]] 
+                    && square[s3[0], s3[1]] == square[s4[0], s4[1]])  // 네 모서리 숫자가 같은지 확인.
+                {
+                    return (garo+1) * (sero+1); // 같으면 넓이를 리턴
                 }
 
                 //
 
-                if (s4[0] == m - 1 && s4[1] == n - 1)
-                {
+                if (s4[0] == m - 1 && s4[1] == n - 1)   // check할 사각형이 맵의 오른쪽 모서리에 도착하면
+                {                                       // 가로 세로를 줄이고 맨 왼쪽 상단으로 이동.
                     s1[0] = 0;
                     s1[1] = 0;
                     s2[0] = 0;
@@ -679,27 +705,30 @@ namespace ConsoleApplication3
                     s4[0] = sero;
                     s4[1] = garo;
                 }
-
-                if (s2[1] == n-1)
+                else if (s2[1] == n-1)              // 맨 우측에 도달하면 한칸 내리고 맨왼쪽으로 이동.
                 {
                     s1[0] += 1;
-                    s1[1] -= 1;
+                    s1[1] = 0;
                     s2[0] += 1;
-                    s2[1] -= 1;
+                    s2[1] += 1;
                     s3[0] += 1;
-                    s3[1] -= 1;
+                    s3[1] = 0;
                     s4[0] += 1;
-                    s4[1] -= 1;
+                    s4[1] = garo;
                 }
 
+                if(garo == 0)                       // 길이가 0이면 break;
+                {
+                    break;
+                }
                 
-                s1[1] += 1;
+                s1[1] += 1;             // 일반적으로는 가로로만 이동.
                 s2[1] += 1;
                 s3[1] += 1;
                 s4[1] += 1;
             }
 
-            return size;
+            return 0;
         }
     }
 }
