@@ -14,4 +14,9 @@ namespace ConsoleApplication2
             Console.WriteLine("Park");
         }
     }
+
+    public static void mergeSort(int[] arr, int[] arr1, int[] arr2)
+    {
+
+    }
 }
