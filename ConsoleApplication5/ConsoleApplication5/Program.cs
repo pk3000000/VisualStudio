@@ -11,7 +11,7 @@ namespace ConsoleApplication5
         protected int[] arr;
         protected int front;
         protected int rear;
-        
+
         public MyQueueInt(int size)
         {
             arr = new int[size];
@@ -28,7 +28,7 @@ namespace ConsoleApplication5
 
         public void enqueue(int val)
         {
-            if(rear == arr.Length-1)
+            if (rear == arr.Length - 1)
             {
                 Console.WriteLine("꽉 찼습니다.");
             }
@@ -40,7 +40,7 @@ namespace ConsoleApplication5
 
         public int dequeue()
         {
-            if((rear + 1) % arr.Length == front)
+            if ((rear + 1) % arr.Length == front)
             {
                 Console.WriteLine("비었습니다.");
                 return int.MinValue;
@@ -63,7 +63,7 @@ namespace ConsoleApplication5
 
         public bool isFull()
         {
-            if((rear + 1)%arr.Length==0)
+            if (rear + 1 == front || (rear == arr.Length - 1 && front == 1))
             {
                 return true;
             }
@@ -72,7 +72,7 @@ namespace ConsoleApplication5
 
         public bool isEmpty()
         {
-            if(rear == front)
+            if (rear == front)
             {
                 return true;
             }
@@ -81,21 +81,16 @@ namespace ConsoleApplication5
 
         public new void enqueue(int val)
         {
-            if ((rear + 1)%arr.Length==0)
+            if (rear+1 == front|| (rear==arr.Length-1 && front == 0))
             {
                 Console.WriteLine("꽉 찼습니다.");
             }
             else
             {
-                rear++;
-
-                if (rear == arr.Length)
-                {
-                    rear = 0;
-                }
+                rear = (rear + 1) % 11;
 
                 arr[rear] = val;
-                
+
             }
         }
         public new int dequeue()
@@ -107,12 +102,7 @@ namespace ConsoleApplication5
             }
             else
             {
-                front++;
-
-                if (front == arr.Length)
-                {
-                    front = 0;
-                }
+                front = (front + 1) % 11;
 
                 return arr[front];
             }
@@ -120,78 +110,68 @@ namespace ConsoleApplication5
         public int nineCount(ref int[] bigArr)
         {
             int count = 0;
-            
             int total = 0;
-            int index = 0;
-            int k = 0;
+            int i = 0;
 
-            for (int i = 0; i < 10; i++)
+            while(true)
             {
-                enqueue(bigArr[i]);
-            }
-
-            k = 10;
-
-            while (true)
-            {
-                
-                if(total == 9)
+                if(i+1==bigArr.Length)
                 {
-                    count++;
-                    index = 0;
-
-                    if(!isEmpty())
-                    {
-                        total = dequeue();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    if(!isFull())
-                    {
-                        enqueue(bigArr[k++]);
-                    }
+                    break;
                 }
-                else if(total > 9)
+
+                if(total < 9)
                 {
-                    index = 0; if (!isEmpty())
-                    {
-                        total = dequeue();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    if (!isFull())
-                    {
-                        enqueue(bigArr[k++]);
-                    }
+                    enqueue(bigArr[i++]);
+                }
+                else if(total == 9)
+                {
+                    total = 0;
+                    count++;
+                    dequeue();
                 }
                 else
                 {
-                    total += arr[++index];
+                    total = 0;
+                    dequeue();
+                }
+
+                if(front < rear)
+                {
+                    for (int j = front; j < rear; j++)
+                    {
+                        total += arr[j];
+                    }
+                }
+                else if(front > rear)
+                {
+                    for (int j = rear; j < front; j++)
+                    {
+                        total += arr[j];
+                    }
                 }
             }
-           
+            
             return count;
         }
-    }
+            
+      }
 
-    class Program
-    {
+      class Program
+      {
         static void Main(string[] args)
         {
             // MyQueueInt que = new MyQueueInt(3);
 
             MyCircularQueue cque = new MyCircularQueue(10);
-            int[] bigArr = new int[100];
+            int[] bigArr = new int[10];
             Random rand = new Random();
             for (int i = 0; i < bigArr.Length; i++)
             {
                 bigArr[i] = rand.Next() % 10;
+                Console.Write("{0} ", bigArr[i]);
             }
-
+            Console.WriteLine();
             Console.WriteLine("{0} ",cque.nineCount(ref bigArr));
 
         }
