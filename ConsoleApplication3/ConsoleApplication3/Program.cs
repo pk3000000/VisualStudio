@@ -412,11 +412,12 @@ namespace ConsoleApplication3
             int half = str.Length / 2;
             bool ok = true;
 
-            for(int i=0;i<=half;i++)
+            for(int i=0;i<half;i++)
             {
                 if(str[i] != str[length-1-i])
                 {
                     ok = false;
+                    break;
                 }
             }
 
@@ -686,7 +687,7 @@ namespace ConsoleApplication3
 
             while(true)
             {
-                if(square[s1[0],s1[1]] == square[s2[0], s2[1]] && square[s2[0], s2[1]] == square[s3[0], s3[1]] 
+                if(square[s1[0], s1[1]] > 0 && square[s1[0],s1[1]] == square[s2[0], s2[1]] && square[s2[0], s2[1]] == square[s3[0], s3[1]] 
                     && square[s3[0], s3[1]] == square[s4[0], s4[1]])  // 네 모서리 숫자가 같은지 확인.
                 {
                     return (garo+1) * (sero+1); // 같으면 넓이를 리턴

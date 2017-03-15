@@ -200,7 +200,7 @@ namespace ConsoleApplication2
             Console.WriteLine();
             */
             // merge sort
-            
+            /*
             int[] arr1 = new int[] { 3, 4, 7, 10, 15, 19, 23, 25, 26, 27 };
             int[] arr2 = new int[] { 1, 2, 5, 20, 28, 30, 31, 32, 33, 43 };
             int[] arr3 = new int[20] { 3, 4, 7, 10, 15, 19, 23, 25, 26, 27, 1, 2, 5, 20, 28, 30, 31, 32, 33, 43 };
@@ -212,7 +212,7 @@ namespace ConsoleApplication2
                 Console.Write("{0} ", arr3[i]);
             }
             Console.WriteLine();
-
+            */
             /*
             int idx1 = 0;
             int idx2 = 0;
@@ -274,6 +274,8 @@ namespace ConsoleApplication2
             //Hanoi(3, 'A', 'B', 'C');
 
             //Console.WriteLine(plus(1.2f,1.3f));
+
+
         }
 
         public static int plus(int a, int b)
