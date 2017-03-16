@@ -10,6 +10,7 @@ namespace ConsoleApplication6
     {
         public int val;
         public Node next;
+        public Node prev;
     }
 
     class MyStackInt
@@ -30,11 +31,13 @@ namespace ConsoleApplication6
                 head = new Node();
                 head.val = val;
                 head.next = null;
+                head.prev = null;
                 top = head;
             }
             else
             {
                 top.next = new Node();
+                top.next.prev = top;
                 top = top.next;
                 top.val = val;
                 top.next = null;
@@ -43,7 +46,6 @@ namespace ConsoleApplication6
 
         public int Pop()
         {
-            Node curNode = null;
             int curValue = 0;
 
             if (head == null)
@@ -53,17 +55,11 @@ namespace ConsoleApplication6
             }
             else
             {
-                curNode = head;
                 curValue = top.val;
 
-                if(curNode.next != null)
+                if (top.prev != null)
                 {
-                    for (; curNode.next != top;)
-                    {
-                        curNode = curNode.next;
-                    }
-                    top = curNode;
-                    top.next = null;
+                    top = top.prev;
                 }
                 else
                 {
@@ -243,6 +239,5 @@ namespace ConsoleApplication6
                 Console.WriteLine(si.Pop());
             }
         }
-        
     }
 }
