@@ -10,7 +10,6 @@ namespace ConsoleApplication6
     {
         public int val;
         public Node next;
-        public Node prev;
     }
 
     class Box
@@ -245,6 +244,85 @@ namespace ConsoleApplication6
         }
     }
 
+    class LastK
+    {
+        Node head;
+        int count = 0;
+
+        public LastK()
+        {
+            head = null;
+            count = 0;
+        }
+
+        public void generate()
+        {
+            for(int i=1;i<11;i++)
+            {
+                insert(i);
+            }
+        }
+
+        public void insert(int val)
+        {
+            if(head == null)
+            {
+                head = new Node();
+                head.val = val;
+                head.next = null;
+                count++;
+            }
+            else
+            {
+                Node temp = head;
+
+                for(int i=0;i<count-1;i++)
+                {
+                    temp = temp.next;
+                }
+                temp.next = new Node();
+                temp.next.val = val;
+                temp.next.next = null;
+
+                count++;
+            }
+        }
+
+        public void print()
+        {
+            Node temp = head;
+
+            if(temp != null)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    Console.WriteLine(temp.val);
+                    temp = temp.next;
+                }
+            }
+        }
+
+        public int returnK(int k)
+        {
+            if(k > count|| k < 0)
+            {
+                Console.WriteLine("범위를 벗어난 값입니다.");
+                return int.MinValue;
+            }
+
+            int rIdx = count - k;
+            Node temp = head;
+
+            for(int i=0;i< rIdx; i++)
+            {
+                temp = temp.next;
+            }
+
+            return temp.val;
+        }
+
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -255,6 +333,7 @@ namespace ConsoleApplication6
             // si.print();
 
             //MyStackInt si = new MyStackInt();
+            /*
             MyQueueInt si = new MyQueueInt();
 
             for(int i=0;i<20;i++)
@@ -275,7 +354,12 @@ namespace ConsoleApplication6
             for (int i = 0; i < 20; i++)
             {
                 Console.WriteLine(si.dequeue());
-            }
+            }*/
+
+
+            LastK L = new LastK();
+            L.generate();
+            Console.WriteLine(L.returnK(10));
         }
     }
 }
