@@ -13,34 +13,50 @@ namespace ConsoleApplication6
         public Node prev;
     }
 
+    class Box
+    {
+        public int val;
+        public int index;
+    }
+
     class MyStackInt
     {
-        Node head;
-        Node  top;
+        int idx;
+        Box[]  arr;
 
         public MyStackInt()
         {
-            head = null;
-            top = null;
+            arr = new Box[10];
+            idx = -1;
         }
 
         public void Push(int val)
         {
-            if (head == null)
+            if (idx == arr.Length - 1)
             {
-                head = new Node();
-                head.val = val;
-                head.next = null;
-                head.prev = null;
-                top = head;
+                Box[] temp = new Box[arr.Length * 2];
+                
+                for(int i=0;i<arr.Length;i++)
+                {
+                    temp[i] = arr[i];
+                }
+
+                arr = temp;
             }
-            else
+
+            if (idx == -1)
             {
-                top.next = new Node();
-                top.next.prev = top;
-                top = top.next;
-                top.val = val;
-                top.next = null;
+                idx++;
+                arr[idx] = new Box();
+                arr[idx].val = val;
+                arr[idx].index = -1;
+            }
+            else 
+            {
+                arr[idx].index = ++idx;
+                arr[idx] = new Box();
+                arr[idx].val = val;
+                arr[idx].index = -1;
             }
         }
 
@@ -48,23 +64,18 @@ namespace ConsoleApplication6
         {
             int curValue = 0;
 
-            if (head == null)
+            if (idx == -1)
             {
                 Console.WriteLine("비었습니다.");
                 return int.MinValue;
             }
             else
             {
-                curValue = top.val;
-
-                if (top.prev != null)
+                curValue = arr[idx].val;
+                idx--;
+                if(idx != -1)
                 {
-                    top = top.prev;
-                }
-                else
-                {
-                    head = null;
-                    top = null;
+                    arr[idx].index = -1;
                 }
             }
             return curValue;
@@ -73,47 +84,64 @@ namespace ConsoleApplication6
 
     class MyQueueInt
     {
-        Node head;
-        Node tail;
-
+        int head;
+        int tail;
+        Box[] arr;
         public MyQueueInt()
         {
-            head = null;
-            tail = null;
+            head = -1;
+            tail = -1;
+            arr = new Box[10];
         }
-        
+
         public void enqueue(int val)
         {
-            if (head == null)
+            if (tail == arr.Length - 1)
             {
-                head = new Node();
-                tail = head;
-                tail.val = val;
+                Box[] temp = new Box[arr.Length * 2];
+
+                int j = 0;
+
+                for (int i = head; i <= tail; i++)
+                {
+                    temp[j++] = arr[i];
+                }
+                arr = temp;
+            }
+            if (head == -1 || head > tail)
+            {
+                if(head == -1)
+                {
+                    head++;
+                }
+                tail++;
+
+                arr[tail] = new Box();
+                arr[tail].val = val;
+                arr[tail].index = -1;
             }
             else
             {
-                tail.next = new Node();
-                tail = tail.next;
-                tail.val = val;
+                arr[tail].index = tail++;
+                arr[tail] = new Box();
+                arr[tail].val = val;
+                arr[tail].index = -1;
             }
         }
 
         public int dequeue()
         {
             int curValue = 0;
-            Node tmp;
-
-            if(head == null)
+            
+            if(head == -1 || head > tail)
             {
                 Console.WriteLine("비었습니다.");
                 return int.MinValue;
             }
             else
             {
-                tmp = head;
-                head = head.next;
-                curValue = tmp.val;
-                tmp.next = null;
+                curValue = arr[head].val;
+                head++;
             }
 
             return curValue;
@@ -226,17 +254,27 @@ namespace ConsoleApplication6
             // si.sort(ref arr);
             // si.print();
 
-            MyStackInt si = new MyStackInt();
-            //MyQueueInt si = new MyQueueInt();
+            //MyStackInt si = new MyStackInt();
+            MyQueueInt si = new MyQueueInt();
 
-            for(int i=0;i<10;i++)
+            for(int i=0;i<20;i++)
             {
-                si.Push(i + 1);
+                si.enqueue(i + 1);
             }
 
-            for(int i=0;i<10;i++)
+            for(int i=0;i<20;i++)
             {
-                Console.WriteLine(si.Pop());
+                Console.WriteLine(si.dequeue());
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                si.enqueue(i + 1);
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                Console.WriteLine(si.dequeue());
             }
         }
     }
