@@ -247,12 +247,10 @@ namespace ConsoleApplication6
     class LastK
     {
         Node head;
-        int count = 0;
 
         public LastK()
         {
             head = null;
-            count = 0;
         }
 
         public void generate()
@@ -270,21 +268,22 @@ namespace ConsoleApplication6
                 head = new Node();
                 head.val = val;
                 head.next = null;
-                count++;
             }
             else
             {
                 Node temp = head;
 
-                for(int i=0;i<count-1;i++)
+                while(true)
                 {
+                    if(temp.next == null)
+                    {
+                        break;
+                    }
                     temp = temp.next;
                 }
                 temp.next = new Node();
                 temp.next.val = val;
                 temp.next.next = null;
-
-                count++;
             }
         }
 
@@ -294,8 +293,12 @@ namespace ConsoleApplication6
 
             if(temp != null)
             {
-                for (int i = 0; i < count; i++)
+                while(true)
                 {
+                    if(temp == null)
+                    {
+                        break;
+                    }
                     Console.WriteLine(temp.val);
                     temp = temp.next;
                 }
@@ -304,21 +307,40 @@ namespace ConsoleApplication6
 
         public int returnK(int k)
         {
-            if(k > count|| k < 0)
+            if(k <= 0)
+            {
+                Console.WriteLine("범위를 벗어난 값입니다.");
+                return int.MinValue;
+            }
+            
+            Node temp = head;
+            Node ktemp = head;
+            int count = 0;
+
+            while(true)
+            {
+                if(temp == null)
+                {
+                    break;
+                }
+               
+                temp = temp.next;
+
+                count++;
+
+                if (count > k)
+                {
+                    ktemp = ktemp.next;
+                }
+            }
+
+            if(ktemp == head&& count < k)
             {
                 Console.WriteLine("범위를 벗어난 값입니다.");
                 return int.MinValue;
             }
 
-            int rIdx = count - k;
-            Node temp = head;
-
-            for(int i=0;i< rIdx; i++)
-            {
-                temp = temp.next;
-            }
-
-            return temp.val;
+            return ktemp.val;
         }
 
     }
@@ -355,7 +377,6 @@ namespace ConsoleApplication6
             {
                 Console.WriteLine(si.dequeue());
             }*/
-
 
             LastK L = new LastK();
             L.generate();
