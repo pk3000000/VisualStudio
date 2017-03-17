@@ -11,10 +11,12 @@ int main()
 	WSADATA wsaData;
 	SOCKET hSocket;
 	char message[BUF_SIZE];
+	char buf[BUF_SIZE];
 	int strLen;
 	SOCKADDR_IN servAdr;
 	int recvLen;
 	int op_count;
+	char op;
 
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
@@ -48,21 +50,24 @@ int main()
 
 	op_count = atoi(message);
 
-	send(hSocket, message, strlen(message), 0);
+	//send(hSocket, message, strlen(message), 0);
 
 	for (int i = 0; i < op_count; i++)
 	{
 		fprintf(stdout,"Operand %d :", i+1);
-		fgets(message, BUF_SIZE, stdin);
-
-		send(hSocket, message, strlen(message), 0);
+		fgets(buf, 5, stdin);
+		strcat(&message[i*4+1], buf);
+		//send(hSocket, message, strlen(message), 0);
 	}
 
 	fprintf(stdout, "Operator :");
-	fgets(message, BUF_SIZE, stdin);
+	scanf("%c ", &op);
+
+	message[strlen(message)] = op;
+
+	printf("%s\n", message);
 
 	send(hSocket, message, strlen(message), 0);
-
 	recvLen = recv(hSocket, message, BUF_SIZE - 1, 0);
 
 	if (recvLen == -1)
