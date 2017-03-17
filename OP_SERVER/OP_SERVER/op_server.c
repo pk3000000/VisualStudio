@@ -5,6 +5,7 @@
 
 #define BUF_SIZE 1024
 void ErrorHandling(char *message);
+int calculate(int opnum, int opnds[], char op);
 
 int main()
 {
@@ -12,14 +13,14 @@ int main()
 	SOCKET hServSock, hClntSock;
 	char message[BUF_SIZE];
 	char buf[BUF_SIZE];
-	int strLen, i;
-	char c_op_count;
-	int op_count;
+	int strLen=0, i=0;
+	char c_op_count='\0';
+	int op_count=0;
 	int operand[100] = { 0, };
-	char op;
-	int result;
-	int recvLen;
-	int recvCnt;
+	char op='\0';
+	int result=0;
+	int recvLen=0;
+	int recvCnt=0;
 
 	SOCKADDR_IN servAdr, clntAdr;
 	int clntAdrSize;
@@ -52,8 +53,8 @@ int main()
 
 	clntAdrSize = sizeof(clntAdr);
 
-	
 	hClntSock = accept(hServSock, (SOCKADDR*)&clntAdr, &clntAdrSize);
+	
 	if (hClntSock == -1)
 	{
 		ErrorHandling("accept() error!");
@@ -63,51 +64,24 @@ int main()
 		printf("Connected client %d \n", 1);
 	}
 
-	recv(hClntSock, &c_op_count, 1, 0);
-		
-	op_count = c_op_count-48;
+	recv(hClntSock, &op_count, 1, 0);
+
+	printf("%d\n", op_count);
 
 	recvLen = 0;
 
-	for (int i = 0; i < op_count; i++)
+	while(op_count*4+1>recvLen)
 	{
-		recvCnt=recv(hClntSock, message, 4, 0);
+		recvCnt=recv(hClntSock, &message[recvLen], BUF_SIZE-1, 0);
 		recvLen += recvCnt;
-		operand[i] = atoi(message);
-		printf("%d\n", operand[i]);
 	}
 
-	recv(hClntSock, message, 1, 0);
+	result = calculate(op_count, (int*)message, message[recvLen - 1]);
 
-	printf("%c\n", message[0]);
+	send(hClntSock, &result, sizeof(result), 0);
+	
+	hClntSock = accept(hServSock, (SOCKADDR*)&clntAdr, &clntAdrSize);
 
-	result = operand[0];
-
-	for (int i = 1; i < op_count; i++)
-	{
-		switch (message[0])
-		{
-		case '+':
-			result += operand[i];
-			break;
-		case '-':
-			result -= operand[i];
-			break;
-		case '*':
-			result *= operand[i];
-			break;
-		case '/':
-			result /= operand[i];
-			break;
-		}
-	}
-
-	itoa(result, buf, 10);
-
-	printf("%s\n", buf);
-
-	send(hClntSock, buf, strlen(buf), 0);
-		
 	closesocket(hClntSock);
 
 	closesocket(hServSock);
@@ -120,4 +94,29 @@ void ErrorHandling(char *message)
 	fputs(message, stderr);
 	fputc('\n', stderr);
 	exit(1);
+}
+
+int calculate(int opnum, int opnds[], char op)
+{
+	int result = opnds[0], i;
+
+	printf("%d\n", opnds[1]);
+
+	switch (op)
+	{
+	case '+':
+		for (i = 1; i < opnum; i++) result += opnds[i];
+		break;
+	case '-':
+		for (i = 1; i < opnum; i++) result -= opnds[i];
+		break;
+	case '*':
+		for (i = 1; i < opnum; i++) result *= opnds[i];
+		break;
+	case '/':
+		for (i = 1; i < opnum; i++) result /= opnds[i];
+		break;
+	}
+
+	return result;
 }

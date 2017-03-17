@@ -16,7 +16,9 @@ int main()
 	SOCKADDR_IN servAdr;
 	int recvLen;
 	int op_count;
-	char op;
+	char op[2];
+	char en;
+	int result = 0;
 
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
@@ -46,37 +48,34 @@ int main()
 
 	
 	fputs("Operand count:", stdout);
-	fgets(message, BUF_SIZE, stdin);
+	scanf("%d", &op_count);
 
-	op_count = atoi(message);
+	message[0] = (char)op_count;
 
 	//send(hSocket, message, strlen(message), 0);
 
 	for (int i = 0; i < op_count; i++)
 	{
 		fprintf(stdout,"Operand %d :", i+1);
-		fgets(buf, 5, stdin);
-		strcat(&message[i*4+1], buf);
+		scanf("%d",(int*)&message[i*4+1]);
 		//send(hSocket, message, strlen(message), 0);
 	}
+	fgetc(stdin);
 
 	fprintf(stdout, "Operator :");
-	scanf("%c ", &op);
+	scanf("%c", &message[op_count * 4 + 1]);
 
-	message[strlen(message)] = op;
+	printf("%c\n", message[op_count * 4 + 1]);
 
-	printf("%s\n", message);
-
-	send(hSocket, message, strlen(message), 0);
-	recvLen = recv(hSocket, message, BUF_SIZE - 1, 0);
+	send(hSocket, message, op_count*4+2, 0);
+	recvLen = recv(hSocket, &result, 4, 0);
 
 	if (recvLen == -1)
 	{
 		ErrorHanding("read() error!");
 	}
-	message[recvLen] = 0;
 
-	printf("Operand result : %d\n", atoi(message));
+	printf("Operand result : %d\n", result);
 	
 	closesocket(hSocket);
 	WSACleanup();
