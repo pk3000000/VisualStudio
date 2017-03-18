@@ -11,7 +11,11 @@ int main(int argc, char *argv[])
 	SOCKADDR_IN servAddr, clntAddr;
 
 	int szClntAddr;
-	char message[] = "Hello World!";
+	char message[1024] = "Hello?";
+	int count = 0;
+	int strLen = 0;
+	int strCnt = 0;
+	int i = 0;
 /*
 	if (argc != 2)
 	{
@@ -51,8 +55,34 @@ int main(int argc, char *argv[])
 	{
 		error_handling("accept() error");
 	}
+	
+	count = strlen(message);
 
-	send(hClntSock, message, sizeof(message), 0);
+	send(hClntSock, (char*)&count, 4, 0);
+
+	while (i < 3)
+	{
+		strLen = 0;
+
+		send(hClntSock, message, strlen(message)+1, 0);
+
+		while (strLen < count-1)
+		{
+			strCnt = recv(hClntSock,&message[strLen],count+1,0);
+			if (strCnt == -1)
+			{
+				error_handling("recv() error!");
+			}
+			strLen += strCnt;
+		}
+
+		message[strLen] = '\0';
+
+		printf("%s\n", message);
+
+		i++;
+	}
+	
 
 	closesocket(hClntSock);
 	closesocket(hServSock);

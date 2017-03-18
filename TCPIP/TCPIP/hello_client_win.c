@@ -11,6 +11,9 @@ int main(int argc, char* argv[])
 
 	char message[30];
 	int strLen;
+	int strCnt;
+	int i;
+	int count = 0;
 
 	/*
 	if (argc != 3)
@@ -41,15 +44,34 @@ int main(int argc, char* argv[])
 		error_handling("connect() error");
 	}
 
-	strLen = recv(hSocket, message, sizeof(message) - 1, 0);
+	i = 0;
 
-	if (strLen == -1)
+	while (i < 3)
 	{
-		error_handling("read() error!");
+		strCnt = 0;
+
+		recv(hSocket, &count, 4, 0);
+
+		strLen = 0;
+
+		while (strLen < count)
+		{
+			strCnt = recv(hSocket, &message[strLen], count, 0);
+			
+			if (strCnt == -1)
+			{
+				error_handling("read() error!");
+			}
+			strLen += strCnt;
+		}
+		
+		message[count + 1] = '\0';
+
+		printf("Message from server : %s\n", message);
+
+		send(hSocket, message, 4 + count + 1, 0);
 	}
-
-	printf("Message from server : %s\n", message);
-
+	
 	closesocket(hSocket);
 	WSACleanup();
 
