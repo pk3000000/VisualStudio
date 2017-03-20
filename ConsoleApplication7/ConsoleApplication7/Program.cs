@@ -157,7 +157,7 @@ namespace ConsoleApplication7
             InOrder(ref root);
         }
 
-        void PostOrder(ref Node temp)
+        void PostOrder(ref Node2 temp)
         {
             if (temp == null)
             {
@@ -169,9 +169,92 @@ namespace ConsoleApplication7
             Console.Write("{0} ", temp.val);
         }
 
+        public void PostOrder2(ref Node2 temp, ref Node2 insert)
+        {
+            
+            if (temp == null)
+            {
+                return;
+            }
+
+            PostOrder2(ref temp.left,ref insert);
+           
+            PostOrder2(ref temp.right,ref insert);
+            if ((temp.val == '-' || temp.val == '+' || temp.val == '*' || temp.val == '/'))
+            {
+                if (temp.left == null)
+                {
+                    temp.left = insert;
+                    return;
+                }
+                else if (temp.right == null)
+                {
+                    temp.right = insert;
+                    return;
+                }
+            }
+            /*
+            if(temp != null)
+            {
+                while (true)
+                {
+                   if(temp.val == '-'||temp.val=='+'||temp.val=='*'||temp.val=='/')
+                    {
+                        if(temp.left == null)
+                        {
+                            temp.left = insert;
+                            break;
+                        }
+                        else if(temp.right == null)
+                        {
+                            temp.right = insert;
+                            break;
+                        }
+                    }
+                   if(temp.left != null)
+                    {
+                        temp = temp.left;
+                    } 
+                   
+                }
+            }
+            */
+
+        }
+        
+        public int PostOrder3(ref Node2 temp)
+        {
+            if (temp == null)
+            {
+                return 0;
+            }
+            if(temp.left == null && temp.right == null)
+            {
+                return temp.val-48;
+            }
+            else
+            {
+                int op1 = PostOrder3(ref temp.left);
+                int op2 = PostOrder3(ref temp.right);
+
+                switch(temp.val)
+                {
+                    case '+':
+                        return op1 + op2;
+                    case '-':
+                        return op1 - op2;
+                    case '*':
+                        return op1 * op2;
+                    case '/':
+                        return op1 / op2;
+                }
+            }
+            return 0;
+        }
+
         public void PostOrderView()
         {
-            PostOrder(ref root);
+            PostOrder(ref root2);
         }
 
         public int CalcString(ref Node2 temp)
@@ -195,12 +278,56 @@ namespace ConsoleApplication7
                 tempRoot[i].val = str[i * 2 + 1];
             }
 
-            tempRoot[0].left = temp[0];
-
-            for(int i=1,j=1;i<tempRoot.Length;i++,j++)
+           
+           
+            for (int i = 0; i < tempRoot.Length; i++)
             {
-                tempRoot[i].left = temp[j];
+                if((tempRoot[i].val=='*'||tempRoot[i].val=='/'))
+                {
+                    if(i < tempRoot.Length-1&&i%2==0)
+                    {
+                        tempRoot[i + 1].left = tempRoot[i];
+                        root2 = tempRoot[i + 1];
+                            
+                    }
+                    else if(i%2!=0)
+                    {
+                        tempRoot[i - 1].right = tempRoot[i];
+                        root2 = tempRoot[i - 1];
+                    }
+                    i += 2;
+                }
             }
+                
+            int j = 0;
+
+            for(int i=0;i<tempRoot.Length;i++)
+            {
+                if(tempRoot[i].val == '+' || tempRoot[i].val == '-')
+                {
+                    for(j=i+1;j<tempRoot.Length;j++)
+                    {
+                        if(tempRoot[j].val == '+' || tempRoot[j].val == '-')
+                        {
+                            
+                            tempRoot[j].left = tempRoot[i];
+                           
+                            //root2 = tempRoot[j];
+                            i = j;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            root2 = tempRoot[tempRoot.Length-1];
+
+            for(int i=0;i<temp.Length;i++)
+            {
+                //Console.WriteLine(temp[i].val);
+                PostOrder2(ref root2, ref temp[i]);
+            }
+                
             
         }
 
@@ -212,11 +339,9 @@ namespace ConsoleApplication7
         {
             BinaryTree bt = new BinaryTree();
             //bt.generate();
-            bt.generate2();
-            bt.preOrderView(); Console.WriteLine();
-            bt.InOrderView(); Console.WriteLine();
-            bt.PostOrderView(); Console.WriteLine();
-            //   Console.WriteLine(bt.root.val);
+            bt.makeCalcTree("2+3*4-6+1");
+            bt.PostOrderView();
+            Console.WriteLine(bt.PostOrder3(ref bt.root2));
         }
     }
 }
