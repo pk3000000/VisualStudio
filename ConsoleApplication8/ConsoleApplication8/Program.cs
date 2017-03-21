@@ -70,36 +70,36 @@ namespace ConsoleApplication8
 
                 int i = 0;
                 
-                if(tempNum/2!=1)
+                
+                while (true)
                 {
-                    while (true)
+                    loute[i] = (tempNum /= 2);
+
+                    i++;
+
+                    if (tempNum == 1)
                     {
-                        loute[i] = (tempNum /= 2);
-
-                        i++;
-
-                        if (tempNum == 1)
-                        {
-                            break;
-                        }
-
-                    }
-                    
-                    for (int j = i - 2; j >= 0; j--)
-                    {
-                     //   Console.WriteLine(loute[j]);
-
-                        if (loute[j] % 2 == 0)
-                        {
-                            tmp = tmp.left;
-                        }
-                        else
-                        {
-                            tmp = tmp.right;
-                        }
+                        break;
                     }
 
                 }
+                
+                for (int j = i - 2; j >= 0; j--)
+                {
+                    //   Console.WriteLine(loute[j]);
+
+                    if (loute[j] % 2 == 0)
+                    {
+                        tmp = tmp.left;
+                    }
+                    else
+                    {
+                        tmp = tmp.right;
+                    }
+                }
+
+                Node tempChange1;
+                Node tempChange2;
 
                 //  Console.WriteLine(temp.count);
 
@@ -111,45 +111,56 @@ namespace ConsoleApplication8
                 else if(temp.count%2==1)
                 {
                     tmp.right = temp;
-                    tmp.parent = tmp;
+                    temp.parent = tmp;
                 }
-
-                Node tempChange;
-
-
+                
+                
                 while (true)
                 {
                     if(temp.parent == null)
                     {
+                        root = temp;
                         break;
                     }
 
                     if(temp.parent.val < temp.val)
                     {
-                        if(temp.parent.left == temp)
+                        if (temp.parent.left == temp)
                         {
-                            tempChange = temp.parent;
-                            tempChange.left = temp.left;
-                            temp.left = tempChange;
-                            temp.parent = tempChange.parent;
+                            temp.parent.left = temp.left;
+                            temp.parent.right = temp.right;
+                            temp.left = temp.parent;
+
+                            tempChange1 = temp.parent.parent;
+                            temp.left.parent = temp;
+                            temp.parent = tempChange1;
                         }
-                        else
+                        else if (temp.parent.right == temp)
                         {
-                            tempChange = temp.parent;
-                            tempChange.right = temp.right;
-                            temp.right = tempChange;
-                            temp.parent = tempChange.parent;
+                            tempChange1 = temp.right;
+                            tempChange2 = temp.left;
+                            temp.right = temp.parent;
+                            temp.left = temp.parent.left;
+                            temp.parent.left = tempChange2;
+                            temp.parent.right = tempChange1;
+
+                            tempChange1 = temp.parent.parent;
+                            temp.right.parent = temp;
+                            temp.parent = tempChange1;
+
+                            if (temp.parent == root)
+                            {
+                                root = temp;
+                                temp.parent = null;
+                            }
                         }
                     }
-                    else
+                    else if(temp.parent.val >= temp.val)
                     {
-                        if(temp.left == root||temp.right == root)
-                        {
-                            root = temp;
-                        }
                         break;
                     }
                 }
+                
             }
         }
 
@@ -180,11 +191,11 @@ namespace ConsoleApplication8
             PriorityHeap ph = new PriorityHeap();
             ph.insert(2);
             ph.insert(5);
-        //    ph.insert(7);
-       //     ph.insert(8);
-      //      ph.insert(9);
-      //      ph.insert(1);
-     //       ph.insert(11);
+            ph.insert(7);
+            ph.insert(8);
+          //  ph.insert(9);
+          //  ph.insert(1);
+          //  ph.insert(11);
 
             ph.PreTravView();
         }
