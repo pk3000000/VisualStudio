@@ -113,6 +113,43 @@ namespace ConsoleApplication8
                     tmp.right = temp;
                     tmp.parent = tmp;
                 }
+
+                Node tempChange;
+
+
+                while (true)
+                {
+                    if(temp.parent == null)
+                    {
+                        break;
+                    }
+
+                    if(temp.parent.val < temp.val)
+                    {
+                        if(temp.parent.left == temp)
+                        {
+                            tempChange = temp.parent;
+                            tempChange.left = temp.left;
+                            temp.left = tempChange;
+                            temp.parent = tempChange.parent;
+                        }
+                        else
+                        {
+                            tempChange = temp.parent;
+                            tempChange.right = temp.right;
+                            temp.right = tempChange;
+                            temp.parent = tempChange.parent;
+                        }
+                    }
+                    else
+                    {
+                        if(temp.left == root||temp.right == root)
+                        {
+                            root = temp;
+                        }
+                        break;
+                    }
+                }
             }
         }
 
@@ -143,11 +180,11 @@ namespace ConsoleApplication8
             PriorityHeap ph = new PriorityHeap();
             ph.insert(2);
             ph.insert(5);
-            ph.insert(7);
-            ph.insert(8);
-            ph.insert(9);
-            ph.insert(1);
-            ph.insert(11);
+        //    ph.insert(7);
+       //     ph.insert(8);
+      //      ph.insert(9);
+      //      ph.insert(1);
+     //       ph.insert(11);
 
             ph.PreTravView();
         }
