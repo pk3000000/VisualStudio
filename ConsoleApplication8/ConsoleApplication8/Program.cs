@@ -62,7 +62,7 @@ namespace ConsoleApplication8
             else
             {
                 int tempNum = temp.count;
-
+                
                 for(int k = 0;k<loute.Length;k++)
                 {
                     loute[k] = 0;
@@ -84,59 +84,77 @@ namespace ConsoleApplication8
 
                 }
                 
-                for (int j = i - 2; j >= 0; j--)
+                for (int j = i-1; j >= 0; j--)
                 {
-                    //   Console.WriteLine(loute[j]);
+                    Console.WriteLine(loute[j]);
 
-                    if (loute[j] % 2 == 0)
+                    if(loute[j]!=1)
                     {
-                        tmp = tmp.left;
+                        if (loute[j] % 2 == 0)
+                        {
+                            tmp = tmp.left;
+                        }
+                        else
+                        {
+                            tmp = tmp.right;
+                        }
                     }
-                    else
-                    {
-                        tmp = tmp.right;
-                    }
+                    
                 }
+                
 
                 Node tempChange1;
                 Node tempChange2;
 
                 //  Console.WriteLine(temp.count);
 
-                if (temp.count%2==0)
+                if (temp.count % 2 == 0)
                 {
                     tmp.left = temp;
                     temp.parent = tmp;
                 }
-                else if(temp.count%2==1)
+                else if (temp.count % 2 == 1)
                 {
                     tmp.right = temp;
                     temp.parent = tmp;
                 }
                 
-                
+
                 while (true)
                 {
-                    if(temp.parent == null)
-                    {
-                        root = temp;
-                        break;
-                    }
-
                     if(temp.parent.val < temp.val)
                     {
+                        
                         if (temp.parent.left == temp)
                         {
+                            if (temp.parent == root)
+                            {
+                                temp.left = root;
+                                root = temp;
+                                root.parent = null;
+                                break;
+                            }
                             temp.parent.left = temp.left;
                             temp.parent.right = temp.right;
                             temp.left = temp.parent;
 
-                            tempChange1 = temp.parent.parent;
-                            temp.left.parent = temp;
-                            temp.parent = tempChange1;
+                            if(temp.parent == temp.left)
+                            {
+                                tempChange1 = temp.parent.parent;
+                                temp.left.parent = temp;
+                                temp.parent = tempChange1;
+                            }
+                            
                         }
                         else if (temp.parent.right == temp)
                         {
+                            if (temp.parent == root)
+                            {
+                                temp.right = root;
+                                root = temp;
+                                root.parent = null;
+                                break;
+                            }
                             tempChange1 = temp.right;
                             tempChange2 = temp.left;
                             temp.right = temp.parent;
@@ -144,14 +162,12 @@ namespace ConsoleApplication8
                             temp.parent.left = tempChange2;
                             temp.parent.right = tempChange1;
 
-                            tempChange1 = temp.parent.parent;
-                            temp.right.parent = temp;
-                            temp.parent = tempChange1;
-
-                            if (temp.parent == root)
+                            
+                            if (temp.parent == temp.right)
                             {
-                                root = temp;
-                                temp.parent = null;
+                                tempChange1 = temp.parent.parent;
+                                temp.right.parent = temp;
+                                temp.parent = tempChange1;
                             }
                         }
                     }
