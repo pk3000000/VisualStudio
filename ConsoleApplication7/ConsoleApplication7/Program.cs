@@ -169,57 +169,39 @@ namespace ConsoleApplication7
             Console.Write("{0} ", temp.val);
         }
 
-        public void PostOrder2(ref Node2 temp, ref Node2 insert)
+        public void  PostOrder2(ref Node2 temp, ref Node2 insert)
         {
-            
+
+            Node2 tmp = PostOrderTrav(ref temp);
+
+            if(temp.left == null)
+            {
+                temp.left = insert;
+            }
+            else if(temp.right == null)
+            {
+                temp.right = insert;
+            }
+
+        }
+
+        public Node2 PostOrderTrav(ref Node2 temp)
+        {
             if (temp == null)
             {
-                return;
+                return null;
             }
-
-            PostOrder2(ref temp.left,ref insert);
+            if (temp.left == null && temp.right == null)
+            {
+                return temp;
+            }
+            else 
+            {
+                PostOrderTrav(ref temp.left);
+                PostOrderTrav(ref temp.right);
+                return temp;
+            }
            
-            PostOrder2(ref temp.right,ref insert);
-            if ((temp.val == '-' || temp.val == '+' || temp.val == '*' || temp.val == '/'))
-            {
-                if (temp.left == null)
-                {
-                    temp.left = insert;
-                    return;
-                }
-                else if (temp.right == null)
-                {
-                    temp.right = insert;
-                    return;
-                }
-            }
-            /*
-            if(temp != null)
-            {
-                while (true)
-                {
-                   if(temp.val == '-'||temp.val=='+'||temp.val=='*'||temp.val=='/')
-                    {
-                        if(temp.left == null)
-                        {
-                            temp.left = insert;
-                            break;
-                        }
-                        else if(temp.right == null)
-                        {
-                            temp.right = insert;
-                            break;
-                        }
-                    }
-                   if(temp.left != null)
-                    {
-                        temp = temp.left;
-                    } 
-                   
-                }
-            }
-            */
-
         }
         
         public int PostOrder3(ref Node2 temp)
@@ -282,47 +264,33 @@ namespace ConsoleApplication7
            
             for (int i = 0; i < tempRoot.Length; i++)
             {
-                if((tempRoot[i].val=='*'||tempRoot[i].val=='/'))
+                if(i == 0 && (tempRoot[i].val == '*' || tempRoot[i].val == '/'))
                 {
-                    if(i < tempRoot.Length-1&&i%2==0)
-                    {
-                        tempRoot[i + 1].left = tempRoot[i];
-                        root2 = tempRoot[i + 1];
-                            
-                    }
-                    else if(i%2!=0)
-                    {
-                        tempRoot[i - 1].right = tempRoot[i];
-                        root2 = tempRoot[i - 1];
-                    }
-                    i += 2;
+                    tempRoot[i + 1].left = tempRoot[i];
                 }
-            }
-                
-            int j = 0;
-
-            for(int i=0;i<tempRoot.Length;i++)
-            {
-                if(tempRoot[i].val == '+' || tempRoot[i].val == '-')
+                else if ((tempRoot[i].val=='*'||tempRoot[i].val=='/'))
                 {
-                    for(j=i+1;j<tempRoot.Length;j++)
-                    {
-                        if(tempRoot[j].val == '+' || tempRoot[j].val == '-')
-                        {
-                            
-                            tempRoot[j].left = tempRoot[i];
-                           
-                            //root2 = tempRoot[j];
-                            i = j;
-                            break;
-                        }
-                    }
+                    
+                    tempRoot[i - 1].right = tempRoot[i];
+                    
+                }
+                else if(i==0 && (tempRoot[i].val == '+'||tempRoot[i].val == '-'))
+                {
+
+                }
+                else if((tempRoot[i].val == '+' || tempRoot[i].val == '-'))
+                {
+
                 }
             }
 
             root2 = tempRoot[tempRoot.Length-1];
 
-            for(int i=0;i<temp.Length;i++)
+
+            PostOrder(ref root2);
+
+
+            for (int i=0;i<temp.Length;i++)
             {
                 //Console.WriteLine(temp[i].val);
                 PostOrder2(ref root2, ref temp[i]);
