@@ -52,7 +52,7 @@ namespace ConsoleApplication8
             temp.count = ++PriorityHeap.num;
 
             Node tmp = root;
-
+            tail = temp;
 
             if(root == null)
             {
@@ -83,26 +83,27 @@ namespace ConsoleApplication8
                     }
 
                 }
-                
-                for (int j = i-1; j >= 0; j--)
+                if(i!=1)
                 {
-                    Console.WriteLine(loute[j]);
-
-                    if(loute[j]!=1)
+                    for (int j = i - 1; j >= 0; j--)
                     {
-                        if (loute[j] % 2 == 0)
-                        {
-                            tmp = tmp.left;
-                        }
-                        else
-                        {
-                            tmp = tmp.right;
-                        }
-                    }
-                    
-                }
-                
+                        //   Console.WriteLine(loute[j]);
 
+                        if (loute[j] != 1)
+                        {
+                            if (loute[j] % 2 == 0)
+                            {
+                                tmp = tmp.left;
+                            }
+                            else
+                            {
+                                tmp = tmp.right;
+                            }
+                        }
+
+                    }
+                }
+               
                 Node tempChange1;
                 Node tempChange2;
 
@@ -118,56 +119,73 @@ namespace ConsoleApplication8
                     tmp.right = temp;
                     temp.parent = tmp;
                 }
-                
+
+                Node tempNode = temp;
 
                 while (true)
                 {
-                    if(temp.parent.val < temp.val)
+                    if (tempNode.parent == null)
+                    {
+                        break;
+                    }
+                    if (tempNode.parent.val < tempNode.val)
+                    {
+                        int tempChangeNum = tempNode.parent.val;
+                        tempNode.parent.val = tempNode.val;
+                        tempNode.val = tempChangeNum;
+                        tempNode = tempNode.parent;
+                    }
+                    else if (tempNode.parent.val >= tempNode.val)
+                    {
+                        break;
+                    }
+
+                }
+
+                /*
+                while (true)
+                {
+                    
+                    if (temp.parent.val < temp.val)
                     {
                         
                         if (temp.parent.left == temp)
                         {
-                            if (temp.parent == root)
+
+                            tempChange1 = temp.left;
+                            tempChange2 = temp.right;
+                            temp.right = temp.parent.right;
+                            temp.left = temp.parent;
+                            temp.parent.left = tempChange1;
+                            temp.parent.right = tempChange2;
+
+                            tempChange1 = temp.parent.parent;
+                            temp.parent.parent = temp;
+                            temp.parent = tempChange1;
+
+                            if (temp.parent == null)
                             {
-                                temp.left = root;
                                 root = temp;
-                                root.parent = null;
                                 break;
                             }
-                            temp.parent.left = temp.left;
-                            temp.parent.right = temp.right;
-                            temp.left = temp.parent;
-
-                            if(temp.parent == temp.left)
-                            {
-                                tempChange1 = temp.parent.parent;
-                                temp.left.parent = temp;
-                                temp.parent = tempChange1;
-                            }
-                            
                         }
                         else if (temp.parent.right == temp)
                         {
-                            if (temp.parent == root)
-                            {
-                                temp.right = root;
-                                root = temp;
-                                root.parent = null;
-                                break;
-                            }
                             tempChange1 = temp.right;
                             tempChange2 = temp.left;
                             temp.right = temp.parent;
                             temp.left = temp.parent.left;
                             temp.parent.left = tempChange2;
                             temp.parent.right = tempChange1;
-
                             
-                            if (temp.parent == temp.right)
+                            tempChange1 = temp.parent.parent;
+                            temp.parent.parent = temp;
+                            temp.parent = tempChange1;
+
+                            if (temp.parent == null)
                             {
-                                tempChange1 = temp.parent.parent;
-                                temp.right.parent = temp;
-                                temp.parent = tempChange1;
+                                root = temp;
+                                break;
                             }
                         }
                     }
@@ -175,10 +193,95 @@ namespace ConsoleApplication8
                     {
                         break;
                     }
+                    
                 }
-                
+             */
+
             }
         }
+
+        public int returnMaxNum()
+        {
+            int num = root.val;
+            Node temp = root;
+            int tempVal = tail.val;
+            tail.val = root.val;
+            root.val = tempVal;
+
+            if(tail.parent.left == tail)
+            {
+                tail.parent.left = null;
+                tail = tail.parent;
+            }
+            else
+            {
+                tail.parent.right = null;
+                tail = tail.parent;
+            }
+
+
+            PriorityHeap.num--;
+
+            if(tail != null)
+            {
+                if(PriorityHeap.num > 2)
+                {
+                    while (true)
+                    {
+                        if(temp.left == null)
+                        {
+                            break;
+                        }
+                        if(temp.left != null && temp.val < temp.left.val)
+                        {
+                            tempVal = temp.val;
+                            temp.val = temp.left.val;
+                            temp.left.val = tempVal;
+
+                            temp = temp.left;
+
+                            if(temp == null)
+                            {
+                                break;
+                            }
+                        }
+                        else if(temp.right != null && temp.val < temp.right.val)
+                        {
+                            tempVal = temp.val;
+                            temp.val = temp.right.val;
+                            temp.right.val = tempVal;
+
+                            temp = temp.right;
+
+                            if(temp == null)
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                else if(PriorityHeap.num == 2)
+                {
+                    if(temp.val < temp.left.val)
+                    {
+                        tempVal = temp.val;
+                        temp.val = temp.left.val;
+                        temp.left.val = tempVal;
+                    }
+                }
+            }
+            else
+            {
+                root = null;
+            }
+
+            return num;
+        }
+       
 
 
         public void PreTravView()
@@ -209,10 +312,11 @@ namespace ConsoleApplication8
             ph.insert(5);
             ph.insert(7);
             ph.insert(8);
-          //  ph.insert(9);
-          //  ph.insert(1);
-          //  ph.insert(11);
-
+            ph.insert(9);
+            ph.insert(1);
+            ph.insert(11);
+            ph.returnMaxNum();
+            ph.returnMaxNum();
             ph.PreTravView();
         }
     }
