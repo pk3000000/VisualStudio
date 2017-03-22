@@ -79,8 +79,49 @@ namespace ConsoleApplication9
         {
             int val = arrNum[0];
             int temp = arrNum[last];
+
+            int tempIdx = 0;
+
             arrNum[last] = arrNum[0];
             arrNum[0] = temp;
+            last--;
+
+            if(last >= -1)
+            {
+                while (true)
+                {
+                    if ((last >= tempIdx * 2 + 1) && arrNum[tempIdx] < arrNum[tempIdx * 2 + 1])
+                    {
+                        temp = arrNum[tempIdx];
+                        arrNum[tempIdx] = arrNum[tempIdx * 2 + 1];
+                        arrNum[tempIdx * 2 + 1] = temp;
+
+                        if (tempIdx * 2 + 1 == last)
+                        {
+                            break;
+                        }
+
+                        tempIdx = tempIdx * 2 + 1;
+                    }
+                    else if ((last >= tempIdx * 2 + 2) && arrNum[tempIdx] < arrNum[tempIdx * 2 + 2])
+                    {
+                        temp = arrNum[tempIdx];
+                        arrNum[tempIdx] = arrNum[tempIdx * 2 + 2];
+                        arrNum[tempIdx * 2 + 2] = temp;
+
+                        if (tempIdx * 2 + 1 == last)
+                        {
+                            break;
+                        }
+
+                        tempIdx = tempIdx * 2 + 2;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
             
             return val;
         }
@@ -97,7 +138,12 @@ namespace ConsoleApplication9
             ph.insert(3);
             ph.insert(5);
             ph.insert(4);
-            ph.print();
+
+            for(int i=0;i<5;i++)
+            {
+                Console.WriteLine(ph.returnVal());
+            }
+            //ph.print();
         }
     }
 }
