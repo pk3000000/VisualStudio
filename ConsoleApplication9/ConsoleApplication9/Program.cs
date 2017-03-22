@@ -23,6 +23,24 @@ namespace ConsoleApplication9
             last = -1;
         }
 
+        public PriorityArrHeap(ref int [] arr)
+        {
+            arrNum = new int[arr.Length+1];
+            last = -1;
+        }
+
+        public void sortArr(ref int [] arr)
+        {
+            for(int i=0;i<arr.Length;i++)
+            {
+                insert(arr[i]);
+            }
+            for(int i=0;i<arr.Length;i++)
+            {
+                arr[i] = returnVal();
+            }
+        }
+
         public void insert(int val)
         {
             arrNum[++last] = val;
@@ -32,7 +50,7 @@ namespace ConsoleApplication9
             {
                 while (true)
                 {
-                    if (arrNum[tempNum] > arrNum[tempNum / 2])
+                    if (arrNum[tempNum] < arrNum[tempNum / 2])
                     {
                         int temp = arrNum[tempNum];
                         arrNum[tempNum] = arrNum[tempNum / 2];
@@ -45,7 +63,7 @@ namespace ConsoleApplication9
 
                         tempNum /= 2;
                     }
-                    else if (tempNum>1&&arrNum[tempNum] > arrNum[(tempNum / 2 - 1)])
+                    else if (tempNum>1&&arrNum[tempNum] < arrNum[(tempNum / 2 - 1)])
                     {
                         int temp = arrNum[tempNum];
                         arrNum[tempNum] = arrNum[(tempNum / 2 - 1)];
@@ -90,28 +108,32 @@ namespace ConsoleApplication9
             {
                 while (true)
                 {
-                    if ((last >= tempIdx * 2 + 1) && arrNum[tempIdx] < arrNum[tempIdx * 2 + 1])
+                    if ((last >= tempIdx * 2 + 1) && (arrNum[tempIdx] > arrNum[tempIdx * 2 + 1]))
                     {
                         temp = arrNum[tempIdx];
                         arrNum[tempIdx] = arrNum[tempIdx * 2 + 1];
                         arrNum[tempIdx * 2 + 1] = temp;
 
-                        if (tempIdx * 2 + 1 == last)
+                        if ((last >= tempIdx * 2 + 2) && (arrNum[tempIdx * 2 + 1] > arrNum[tempIdx * 2 + 2]))
                         {
-                            break;
+                            temp = arrNum[tempIdx * 2 + 1];
+                            arrNum[tempIdx * 2 + 1] = arrNum[tempIdx * 2 + 2];
+                            arrNum[tempIdx * 2 + 2] = temp;
                         }
 
                         tempIdx = tempIdx * 2 + 1;
                     }
-                    else if ((last >= tempIdx * 2 + 2) && arrNum[tempIdx] < arrNum[tempIdx * 2 + 2])
+                    else if ((last >= tempIdx * 2 + 2) && (arrNum[tempIdx] > arrNum[tempIdx * 2 + 2]))
                     {
                         temp = arrNum[tempIdx];
                         arrNum[tempIdx] = arrNum[tempIdx * 2 + 2];
                         arrNum[tempIdx * 2 + 2] = temp;
 
-                        if (tempIdx * 2 + 1 == last)
+                        if ((last >= tempIdx * 2 + 2) && (arrNum[tempIdx * 2 + 1] > arrNum[tempIdx * 2 + 2]))
                         {
-                            break;
+                            temp = arrNum[tempIdx * 2 + 1];
+                            arrNum[tempIdx * 2 + 1] = arrNum[tempIdx * 2 + 2];
+                            arrNum[tempIdx * 2 + 2] = temp;
                         }
 
                         tempIdx = tempIdx * 2 + 2;
@@ -132,17 +154,25 @@ namespace ConsoleApplication9
     {
         static void Main(string[] args)
         {
-            PriorityArrHeap ph = new PriorityArrHeap();
-            ph.insert(2);
-            ph.insert(1);
-            ph.insert(3);
-            ph.insert(5);
-            ph.insert(4);
+            int[] arr = { 22,43,51,16,37, 11,1,6};
+            PriorityArrHeap ph = new PriorityArrHeap(ref arr);
 
-            for(int i=0;i<5;i++)
+            ph.sortArr(ref arr);
+
+            
+            for(int i=0;i<arr.Length;i++)
             {
-                Console.WriteLine(ph.returnVal());
+                Console.Write("{0} ", arr[i]);
             }
+            Console.WriteLine();
+            
+           // ph.print();
+            
+
+            //for(int i=0;i<5;i++)
+            //{
+            //    Console.WriteLine(ph.returnVal());
+            //}
             //ph.print();
         }
     }
