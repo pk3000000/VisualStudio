@@ -99,104 +99,85 @@ namespace ConsoleApplication11
                     return;
                 }
             }
-
-            while (true)
+            else
             {
-                if (tempNode == null)
+                while(true)
                 {
-                    Console.WriteLine("{0} 못 찾았습니다.", val);
-                    break;
-                }
-                if (tempNode != null && tempNode.val == val)
-                {
-                    if(tempNode.parent.right == tempNode)
+                    if(tempNode == null)
                     {
-                        if (tempNode.left == null && tempNode.right == null)
+                        break;
+                    }
+                    else
+                    {
+                        if (tempNode.val == val && tempNode.left == null && tempNode.right == null)
                         {
-                            tempNode.parent.right = null;
-                            tempNode.parent = null;
                             tempNode = null;
+                            break;
                         }
-                        else if(tempNode.left==null||tempNode.right==null)
+                        else if (tempNode.left != null && tempNode.right != null)
                         {
-                            if(tempNode.left == null)
-                            {
-                                tempNode.parent.right = tempNode.right.right;
-                                tempNode = null;
-                                Console.WriteLine("{0} 지웠습니다.", val);
-                                break;
-                            }
-                            else if(tempNode.right == null)
-                            {
-                                tempNode.parent.left = tempNode.left.left;
-                                tempNode = null;
-                                Console.WriteLine("{0} 지웠습니다.", val);
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            TreeNode tNode = tempNode.left;
+                            TreeNode tNode = tempNode.parent;
+                            tempNode = tempNode.left;
 
-                            while(true)
+                            while (true)
                             {
-                                if(tNode.right != null)
+                                if (tempNode.right != null)
                                 {
-                                    tNode = tNode.right;
+                                    tempNode = tempNode.right;
                                 }
                                 else
                                 {
-                                    tNode.parent.right = null;
-                                    tNode.parent = tempNode.parent;
-                                    tempNode.parent.left = tNode;
-                                    tNode.right = tempNode.right;
-                                    tempNode = null;
-                                    Console.WriteLine("{0} 지웠습니다.", val);
-                                    break;
+                                    if (tempNode.left == null)
+                                    {
+                                        tNode.left = tempNode;
+                                        tempNode.parent = tNode;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        tempNode.left.parent = tempNode.parent;
+                                        tempNode.parent.right = tempNode.left;
+                                        tNode.left = tempNode;
+                                        tempNode.parent = tNode;
+                                        break;
+                                    }
                                 }
                             }
+                            break;
                         }
-                    }
-                    else if(tempNode.parent.left == tempNode)
-                    {
-                        if (tempNode.left == null && tempNode.right == null)
+                        else if (tempNode.left == null)
                         {
-                            tempNode.parent.left = null;
-                            tempNode.parent = null;
+                            if (tempNode.parent != null && tempNode.right != null)
+                            {
+                                tempNode.parent.right = tempNode.right;
+                                tempNode.right.parent = tempNode.parent;
+                            }
+                            else
+                            {
+
+                            }
                             tempNode = null;
+                            break;
+                        }
+                        else if (tempNode.right == null)
+                        {
+                            if (tempNode.parent != null && tempNode.left != null)
+                            {
+                                tempNode.parent.left = tempNode.left;
+                                tempNode.left.parent = tempNode.parent;
+                            }
+                            else
+                            {
+
+                            }
+                            tempNode = null;
+                            break;
                         }
                     }
+                }
                     
-                    Console.WriteLine("{0} 지웠습니다.", val);
-                    break;
-                }
-                if (tempNode != null)
-                {
-                    if (tempNode.val > val)
-                    {
-                        tempNode = tempNode.left;
-
-                        if (tempNode == null || tempNode.val < val)
-                        {
-                            Console.WriteLine("못 찾았습니다.");
-                            break;
-                        }
-                    }
-                }
-                if (tempNode != null)
-                {
-                    if (tempNode.val < val)
-                    {
-                        tempNode = tempNode.right;
-
-                        if (tempNode == null || tempNode.val > val)
-                        {
-                            Console.WriteLine("못 찾았습니다.");
-                            break;
-                        }
-                    }
-                }
             }
+            
         }
 
         public void search(ref TreeNode tempNode, int val)
@@ -248,16 +229,16 @@ namespace ConsoleApplication11
 
             bst.insert(16);
             bst.insert(15);
-            bst.insert(17);
-            bst.insert(14);
-            bst.insert(18);
-            bst.insert(19);
-            bst.insert(12);
-            bst.insert(11);
+         //   bst.insert(17);
+         //   bst.insert(14);
+         //   bst.insert(18);
+         //   bst.insert(19);
+         //   bst.insert(12);
+          //  bst.insert(11);
 
-            bst.search(ref bst.root,18);
-            bst.delete(18);
-            bst.search(ref bst.root, 18);
+            bst.search(ref bst.root,16);
+            bst.delete(16);
+            bst.search(ref bst.root, 16);
         }
     }
 }
