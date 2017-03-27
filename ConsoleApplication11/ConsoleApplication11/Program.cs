@@ -43,8 +43,8 @@ namespace ConsoleApplication11
 
         public void insert(int val)
         {
-            TreeNode tempTree = root;
-            TreeNode insertTree = new TreeNode(val, null, null, null);
+           TreeNode tempTree = root;
+           TreeNode insertTree = new TreeNode(val, null, null, null);
 
             if (root == null)
             {
@@ -52,172 +52,130 @@ namespace ConsoleApplication11
             }
             else
             {
-               
                 while(true)
                 {
-                    if (tempTree.val > val)
+                    if(tempTree.val > val)
                     {
-                        if (tempTree.left == null)
+                        if(tempTree.left == null)
                         {
-                            insertTree.parent = tempTree;
                             tempTree.left = insertTree;
-                            return;
+                            insertTree.parent = tempTree;
+                            break;
                         }
-                        else
-                        {
-                            tempTree = tempTree.left;
-                        }
+                        tempTree = tempTree.left;
+                        
                     }
-                    else if (tempTree.val <= val)
+                    else if(tempTree.val <= val)
                     {
                         if (tempTree.right == null)
                         {
-                            insertTree.parent = tempTree;
                             tempTree.right = insertTree;
-                            return;
+                            insertTree.parent = tempTree;
+                            break;
                         }
-                        else
-                        {
-                            tempTree = tempTree.right;
-                           
-                        }
+                        tempTree = tempTree.right;
                     }
                 }
-                
             }
+
         }
 
-        public void delete(int val)
+        public TreeNode delete(ref TreeNode tempNode, int val)
         {
-            TreeNode tempNode = root;
-
-            if (root.left == null && root.right == null)
+            if(tempNode == null)
             {
-                if (root.val == val)
-                {
-                    root = null;
-                    return;
-                }
+                return null;
+            }
+            else if(tempNode.val < val)
+            {
+                tempNode.right = delete(ref tempNode.right, val);
+            }
+            else if(tempNode. val > val)
+            {
+                tempNode.left = delete(ref tempNode.left, val);
             }
             else
             {
-                while(true)
+                if(tempNode.left != null || tempNode.right != null)
                 {
-                    if(tempNode == null)
+                    TreeNode tNode = null;
+                    if(tempNode.left != null)
                     {
-                        break;
+                        tNode = findMax(ref tempNode.left);
+                        tempNode.val = tNode.val;
+                        tempNode.left = delete(ref tempNode.left, val);
                     }
                     else
                     {
-                        if (tempNode.val == val && tempNode.left == null && tempNode.right == null)
-                        {
-                            tempNode = null;
-                            break;
-                        }
-                        else if (tempNode.left != null && tempNode.right != null)
-                        {
-                            TreeNode tNode = tempNode.parent;
-                            tempNode = tempNode.left;
-
-                            while (true)
-                            {
-                                if (tempNode.right != null)
-                                {
-                                    tempNode = tempNode.right;
-                                }
-                                else
-                                {
-                                    if (tempNode.left == null)
-                                    {
-                                        tNode.left = tempNode;
-                                        tempNode.parent = tNode;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        tempNode.left.parent = tempNode.parent;
-                                        tempNode.parent.right = tempNode.left;
-                                        tNode.left = tempNode;
-                                        tempNode.parent = tNode;
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                        else if (tempNode.left == null)
-                        {
-                            if (tempNode.parent != null && tempNode.right != null)
-                            {
-                                tempNode.parent.right = tempNode.right;
-                                tempNode.right.parent = tempNode.parent;
-                            }
-                            else
-                            {
-
-                            }
-                            tempNode = null;
-                            break;
-                        }
-                        else if (tempNode.right == null)
-                        {
-                            if (tempNode.parent != null && tempNode.left != null)
-                            {
-                                tempNode.parent.left = tempNode.left;
-                                tempNode.left.parent = tempNode.parent;
-                            }
-                            else
-                            {
-
-                            }
-                            tempNode = null;
-                            break;
-                        }
+                        tNode = findMin(ref tempNode.right);
+                        tempNode.val = tNode.val;
+                        tempNode.right = delete(ref tempNode.right, val);
                     }
                 }
-                    
+                else
+                {
+                    if(tempNode.parent.left == tempNode)
+                    {
+                        tempNode.parent.left = null;
+                    }
+                    else if(tempNode.parent.right == tempNode)
+                    {
+                        tempNode.parent.right = null;
+                    }
+                    return null;
+                }
             }
-            
+            return tempNode;
+        }
+
+        public TreeNode findMax(ref TreeNode tempNode)
+        {
+            if(tempNode.right!=null)
+            {
+                return findMax(ref tempNode.right);
+            }
+            else
+            {
+                return tempNode;
+            }
+        }
+
+        public TreeNode findMin(ref TreeNode tempNode)
+        {
+            if (tempNode.left != null)
+            {
+                return findMin(ref tempNode.left);
+            }
+            else
+            {
+                return tempNode;
+            }
         }
 
         public void search(ref TreeNode tempNode, int val)
         {
-            while(true)
+            if(tempNode == null)
             {
-                if(tempNode == null)
-                {
-                    break;
-                }
-                if (tempNode != null && tempNode.val == val)
-                {
-                    Console.WriteLine("{0} 찾았습니다.", val);
-                    break;
-                }
-                if (tempNode != null)
-                {
-                    if(tempNode.val > val)
-                    {
-                        tempNode = tempNode.left;
-
-                        if(tempNode==null||tempNode.val < val)
-                        {
-                            break;
-                        }
-                    }
-                }
-                if (tempNode != null)
-                {
-                    if(tempNode.val < val)
-                    {
-                        tempNode = tempNode.right;
-
-                        if (tempNode == null || tempNode.val > val)
-                        {
-                            break;
-                        }
-                    }
-                }
+                return;
             }
+
+            if(tempNode.val > val)
+            {
+                search(ref tempNode.left, val);
+            }
+
+            if(tempNode.val == val)
+            {
+                Console.WriteLine("{0} found", val);
+                return;
+            }
+
+            if(tempNode.val < val)
+            {
+                search(ref tempNode.right, val);
+            }
+                
+            
         }
     }
 
@@ -229,16 +187,16 @@ namespace ConsoleApplication11
 
             bst.insert(16);
             bst.insert(15);
-         //   bst.insert(17);
-         //   bst.insert(14);
-         //   bst.insert(18);
-         //   bst.insert(19);
-         //   bst.insert(12);
-          //  bst.insert(11);
+            bst.insert(17);
+            bst.insert(14);
+            bst.insert(18);
+            bst.insert(19);
+            bst.insert(12);
+            bst.insert(11);
 
-            bst.search(ref bst.root,16);
-            bst.delete(16);
-            bst.search(ref bst.root, 16);
+            bst.search(ref bst.root,11);
+            bst.delete(ref bst.root,11);
+            bst.search(ref bst.root, 11);
         }
     }
 }
