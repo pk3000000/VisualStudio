@@ -99,17 +99,40 @@ namespace ConsoleApplication11
                 if(tempNode.left != null || tempNode.right != null)
                 {
                     TreeNode tNode = null;
+
                     if(tempNode.left != null)
                     {
                         tNode = findMax(ref tempNode.left);
                         tempNode.val = tNode.val;
-                        tempNode.left = delete(ref tempNode.left, val);
+
+                        if(tNode.left != null)
+                        {
+                            tNode.parent.left = tNode.left;
+                            tNode.left.parent = tNode.parent;
+                            tempNode.left = delete(ref tempNode.left, tNode.val);
+                        }
+                        else
+                        {
+                            tempNode.left = delete(ref tempNode.left, val);
+                        }
+                        
                     }
                     else
                     {
                         tNode = findMin(ref tempNode.right);
                         tempNode.val = tNode.val;
-                        tempNode.right = delete(ref tempNode.right, val);
+
+                        if (tNode.right != null)
+                        {
+                            tNode.parent.right = tNode.right;
+                            tNode.right.parent = tNode.parent;
+                            tempNode.right = delete(ref tempNode.right, tNode.val);
+                        }
+                        else
+                        {
+                            tempNode.right = delete(ref tempNode.right, val);
+                        }
+                        
                     }
                 }
                 else
@@ -185,18 +208,17 @@ namespace ConsoleApplication11
         {
             BSTree bst = new BSTree();
 
-            bst.insert(16);
-            bst.insert(15);
-            bst.insert(17);
-            bst.insert(14);
-            bst.insert(18);
-            bst.insert(19);
-            bst.insert(12);
-            bst.insert(11);
+            for(int i=1;i<100;i++)
+            {
+                bst.insert(i);
+            }
 
-            bst.search(ref bst.root,11);
-            bst.delete(ref bst.root,11);
-            bst.search(ref bst.root, 11);
+            bst.search(ref bst.root,3);
+            bst.delete(ref bst.root,3);
+            bst.search(ref bst.root, 3);
+            bst.search(ref bst.root, 1);
+            bst.delete(ref bst.root, 1);
+            bst.search(ref bst.root, 1);
         }
     }
 }
