@@ -20,8 +20,9 @@ namespace RedBlackTree
             this.right = null;
             this.parent = null;
             this.val = val;
-            this.color = "RED";
+            this.color = "BLACK";
         }
+        
     }
 
     public class RBTree
@@ -32,183 +33,215 @@ namespace RedBlackTree
         {
             root = null;
         }
-        
 
-        public TreeNode createNode(int val)
-        {
-            TreeNode tempNode = new TreeNode(val);
-            tempNode.left = null;
-            tempNode.right = null;
-            tempNode.parent = null;
+        public  TreeNode searchNode(ref TreeNode tempNode, int val)
+        { 
 
-            return tempNode;
-        }
-
-        public void leftRotate(ref TreeNode tNode)
-        {
-            TreeNode temp = tNode.right;
-            tNode.right = temp.left;
-
-            if(temp.left != null)
+            if(root == null)
             {
-                temp.left.parent = tNode;
+                return null;
             }
 
-            temp.parent = tNode.parent;
-
-            if(tNode.parent == null)
+            if(tempNode.val > val)
             {
-                root = temp;
+                return searchNode(ref tempNode.left, val);
             }
-            else if(tNode == tNode.parent.left)
+            else if(tempNode.val < val)
             {
-                tNode.parent.left = temp;
+                return searchNode(ref tempNode.right, val);
             }
             else
             {
-                tNode.parent.right = temp;
+                return tempNode;
             }
-
-            temp.left = tNode;
-            tNode.parent = temp;
         }
 
-        public void rightRotate(ref TreeNode tNode)
+        public TreeNode searchMinNode(ref TreeNode tempNode)
         {
-            TreeNode temp = tNode.left;
-            tNode.left = temp.right;
-
-            if (temp.right != null)
+            if(tempNode == null)
             {
-                temp.right.parent = tNode;
+                return null;
             }
 
-            temp.parent = tNode.parent;
-
-            if (tNode.parent == null)
+            if(tempNode.left == null)
             {
-                root = temp;
-            }
-            else if (tNode == tNode.parent.left)
-            {
-                tNode.parent.left = temp;
+                return tempNode;
             }
             else
             {
-                tNode.parent.right = temp;
+                return searchMinNode(ref tempNode.left);
             }
-
-            temp.right = tNode;
-            tNode.parent = temp;
         }
 
-        public void insert(int val)
+        public void insertNode(ref TreeNode tempNode, ref TreeNode newNode)
         {
-            TreeNode newNode = createNode(val);
-            TreeNode tempNode = root;
+            insertNodeHelper(ref tempNode,ref newNode);
 
-            if (tempNode == null)
+            newNode.color = "RED";
+            newNode.left = null;
+            newNode.right = null;
+
+            rebuildAfterInsert(ref newNode);
+
+        }
+
+        public void insertNodeHelper(ref TreeNode tempNode, ref TreeNode newNode)
+        {
+            if(root == null)
             {
                 root = newNode;
-                root.color = "BLACK";
+            }
+
+            if(tempNode.val < newNode.val)
+            {
+                if(tempNode.right == null)
+                {
+                    tempNode.right = newNode;
+                    newNode.parent = tempNode;
+                }
+                else
+                {
+                    insertNodeHelper(ref tempNode.right, ref newNode);
+                }
+            }
+            else if(tempNode.val > newNode.val)
+            {
+                if (tempNode.left == null)
+                {
+                    tempNode.left = newNode;
+                    newNode.parent = tempNode;
+                }
+                else
+                {
+                    insertNodeHelper(ref tempNode.left, ref newNode);
+                }
+            }
+        }
+
+        public void rotateRight(ref TreeNode parent)
+        {
+            TreeNode leftChild = parent.left;
+
+            parent.left = leftChild.right;
+
+            if(leftChild.right != null)
+            {
+                leftChild.right.parent = parent;
+            }
+
+            leftChild.parent = parent.parent;
+
+            if(parent.parent == null)
+            {
+                root = leftChild;
             }
             else
             {
-                while(true)
+                if(parent == parent.parent.left)
                 {
-                    
-                    if(tempNode.left != null || tempNode.right != null)
-                    {
-
-                    }
-                    if(tempNode.val == val)
-                    {
-                        Console.WriteLine("중복된 값이 있습니다.");
-                        break;
-                    }
-                    else if(tempNode.val > val)
-                    {
-                        if (tempNode.left != null)
-                        {
-                            tempNode = tempNode.left;
-                        }
-                        if (tempNode.left == null)
-                        {
-                            newNode.parent = tempNode;
-                            tempNode.left = newNode;
-                            break;
-                        }
-                    }
-                    else if(tempNode.val < val)
-                    {
-                        if (tempNode.right != null)
-                        {
-                            tempNode = tempNode.right;
-                        }
-                        if (tempNode.right == null)
-                        {
-                            newNode.parent = tempNode;
-                            tempNode.right = newNode;
-                            break;
-                        }
-                    }
+                    parent.parent.left = leftChild;
+                }
+                else
+                {
+                    parent.parent.right = leftChild;
                 }
             }
 
-            insertFixup(ref root, ref newNode);
+            leftChild.right = parent;
+            parent.parent = leftChild;
         }
 
-        public void insertFixup(ref TreeNode tempNode, ref TreeNode tNode)
+        public void rotateLeft(ref TreeNode parent)
         {
-            if(tNode != null && tNode.parent!= null && tNode.parent.parent!= null)
+            TreeNode rightChild = parent.right;
+
+            parent.right = rightChild.left;
+
+            if (rightChild.left != null)
             {
-                // 1. 부모 '빨강' , 삼촌 '빨강'
-                if (tNode.parent == tNode.parent.parent.left)
-                {
-                    if (tNode.parent.parent.right != null && tNode.parent.color.Equals("RED") && tNode.parent.parent.right.color.Equals("RED"))
-                    {
-                        tNode.parent.color = "BLACK";
-                        tNode.parent.parent.right.color = "BLACK";
-                        tNode.parent.parent.color = "RED";
-                    }
-                }
-                else if (tNode.parent == tNode.parent.parent.right)
-                {
-                    if (tNode.parent.parent.left != null && tNode.parent.color.Equals("RED") && tNode.parent.parent.left.color.Equals("RED"))
-                    {
-                        tNode.parent.color = "BLACK";
-                        tNode.parent.parent.left.color = "BLACK";
-                        tNode.parent.parent.color = "RED";
-                    }
-                }
-
-                // 2. 부모 '빨강' , 삼촌 '검정', 현재노드 '우측 자식'
-                if(tNode.parent == tNode.parent.parent.left)
-                {
-                    if (tNode.parent.parent.right!=null&&tNode.parent.color.Equals("RED") && tNode.parent.parent.right.color.Equals("BLACK")&&tNode.parent.right==tNode)
-                    {
-                        leftRotate(ref tNode);
-
-                        tNode.parent.color = "BLACK";
-                        tNode.parent.parent.color = "RED";
-
-                        rightRotate(ref tNode.parent.parent);
-                    }
-                }
-                else if(tNode.parent == tNode.parent.parent.right)
-                {
-                    if (tNode.parent.parent.left!=null&&tNode.parent.color.Equals("RED") && tNode.parent.parent.left.color.Equals("BLACK") && tNode.parent.right == tNode)
-                    {
-                        rightRotate(ref tNode);
-
-                        tNode.parent.color = "BLACK";
-                        tNode.parent.parent.color = "RED";
-
-                        leftRotate(ref tNode.parent.parent);
-                    }
-                }
-                root.color = "BLACK";
+                rightChild.left.parent = parent;
             }
+
+            rightChild.parent = parent.parent;
+
+            if (parent.parent == null)
+            {
+                root = rightChild;
+            }
+            else
+            {
+                if (parent == parent.parent.left)
+                {
+                    parent.parent.left = rightChild;
+                }
+                else
+                {
+                    parent.parent.right = rightChild;
+                }
+            }
+
+            rightChild.left = parent;
+            parent.parent = rightChild;
+        }
+
+        public void rebuildAfterInsert(ref TreeNode tempNode)
+        {
+            while(tempNode != root && string.Equals(tempNode.parent.color,"RED"))
+            {
+                if(tempNode.parent == tempNode.parent.parent.left)
+                {
+                    TreeNode uncle = tempNode.parent.parent.right;
+
+                    if(string.Equals(uncle.color,"RED"))
+                    {
+                        tempNode.color = "BLACK";
+                        uncle.color = "BLACK";
+                        tempNode.parent.parent.color = "RED";
+
+                        tempNode = tempNode.parent.parent;
+                    }
+                    else
+                    {
+                        if(tempNode == tempNode.parent.right)
+                        {
+                            tempNode = tempNode.parent;
+                            rotateLeft(ref tempNode);
+                        }
+
+                        tempNode.parent.color = "BLACK";
+                        tempNode.parent.parent.color = "RED";
+
+                        rotateRight(ref tempNode.parent.parent);
+                    }
+                }
+                else
+                {
+                    TreeNode uncle = tempNode.parent.parent.left;
+
+                    if(string.Equals(uncle.color,"RED"))
+                    {
+                        tempNode.parent.color = "BLACK";
+                        uncle.color = "BLACK";
+                        tempNode.parent.parent.color = "RED";
+
+                        tempNode = tempNode.parent.parent;
+                    }
+                    else
+                    {
+                        if(tempNode == tempNode.parent.left)
+                        {
+                            tempNode = tempNode.parent;
+                            rotateRight(ref tempNode);
+                        }
+
+                        tempNode.parent.color = "BLACK";
+                        tempNode.parent.parent.color = "RED";
+                        rotateLeft(ref tempNode.parent.parent);
+                    }
+                }
+            }
+
+            root.color = "BLACK";
         }
 
         public void search(ref TreeNode tempNode, int val)
@@ -225,7 +258,8 @@ namespace RedBlackTree
 
             if (tempNode.val == val)
             {
-                Console.WriteLine("{0} {1} found", tempNode.val,tempNode.color);
+                Console.WriteLine("{0} found", val);
+                Console.WriteLine("{0} ", tempNode.color);
                 return;
             }
 
@@ -236,6 +270,7 @@ namespace RedBlackTree
 
 
         }
+
     }
 
     class Program
@@ -246,8 +281,10 @@ namespace RedBlackTree
 
             for (int i = 0; i < 100; i++)
             {
-                rbt.insert(i + 1);
+               // rbt.insert(i+1);
             }
+
+            rbt.search(ref rbt.root, 3);
             
         }
     }
