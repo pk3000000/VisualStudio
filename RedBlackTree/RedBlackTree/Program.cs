@@ -26,7 +26,7 @@ namespace RedBlackTree
 
     public class RBTree
     {
-        TreeNode root;
+        public TreeNode root;
 
         public RBTree()
         {
@@ -211,7 +211,31 @@ namespace RedBlackTree
             }
         }
 
+        public void search(ref TreeNode tempNode, int val)
+        {
+            if (tempNode == null)
+            {
+                return;
+            }
 
+            if (tempNode.val > val)
+            {
+                search(ref tempNode.left, val);
+            }
+
+            if (tempNode.val == val)
+            {
+                Console.WriteLine("{0} {1} found", tempNode.val,tempNode.color);
+                return;
+            }
+
+            if (tempNode.val < val)
+            {
+                search(ref tempNode.right, val);
+            }
+
+
+        }
     }
 
     class Program
@@ -219,11 +243,12 @@ namespace RedBlackTree
         static void Main(string[] args)
         {
             RBTree rbt = new RBTree();
-            
-            for(int i=0;i<100;i++)
+
+            for (int i = 0; i < 100; i++)
             {
                 rbt.insert(i + 1);
             }
+            
         }
     }
 }
