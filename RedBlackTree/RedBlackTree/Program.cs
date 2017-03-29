@@ -28,16 +28,22 @@ namespace RedBlackTree
     public class RBTree
     {
         public TreeNode root;
+        public TreeNode Nil;
 
         public RBTree()
         {
             root = null;
+            Nil = new TreeNode(int.MinValue);
+            Nil.left = null;
+            Nil.right = null;
+            Nil.parent = null;
+            Nil.color = "BLACK";
         }
 
         public  TreeNode searchNode(ref TreeNode tempNode, int val)
         { 
 
-            if(root == null)
+            if(root == Nil)
             {
                 return null;
             }
@@ -58,12 +64,12 @@ namespace RedBlackTree
 
         public TreeNode searchMinNode(ref TreeNode tempNode)
         {
-            if(tempNode == null)
+            if(tempNode == Nil)
             {
-                return null;
+                return Nil;
             }
 
-            if(tempNode.left == null)
+            if(tempNode.left == Nil)
             {
                 return tempNode;
             }
@@ -73,15 +79,23 @@ namespace RedBlackTree
             }
         }
 
-        public void insertNode(ref TreeNode tempNode, ref TreeNode newNode)
+        public void insertNode(ref TreeNode tempNode, int val)
         {
+            TreeNode newNode = new TreeNode(val);
+
+            newNode.parent = null;
+            newNode.left = null;
+            newNode.right = null;
+            newNode.val = val;
+            newNode.color = "BLACK";
+
             insertNodeHelper(ref tempNode,ref newNode);
 
             newNode.color = "RED";
-            newNode.left = null;
-            newNode.right = null;
+            newNode.left = Nil;
+            newNode.right = Nil;
 
-            rebuildAfterInsert(ref newNode);
+            rebuildAfterInsert(ref tempNode, ref newNode);
 
         }
 
@@ -94,7 +108,7 @@ namespace RedBlackTree
 
             if(tempNode.val < newNode.val)
             {
-                if(tempNode.right == null)
+                if(tempNode.right == Nil)
                 {
                     tempNode.right = newNode;
                     newNode.parent = tempNode;
@@ -106,7 +120,7 @@ namespace RedBlackTree
             }
             else if(tempNode.val > newNode.val)
             {
-                if (tempNode.left == null)
+                if (tempNode.left == Nil)
                 {
                     tempNode.left = newNode;
                     newNode.parent = tempNode;
@@ -118,13 +132,13 @@ namespace RedBlackTree
             }
         }
 
-        public void rotateRight(ref TreeNode parent)
+        public void rotateRight(ref TreeNode tempNode, ref TreeNode parent)
         {
             TreeNode leftChild = parent.left;
 
             parent.left = leftChild.right;
 
-            if(leftChild.right != null)
+            if(leftChild.right != Nil)
             {
                 leftChild.right.parent = parent;
             }
@@ -151,13 +165,13 @@ namespace RedBlackTree
             parent.parent = leftChild;
         }
 
-        public void rotateLeft(ref TreeNode parent)
+        public void rotateLeft(ref TreeNode tempNode, ref TreeNode parent)
         {
             TreeNode rightChild = parent.right;
 
             parent.right = rightChild.left;
 
-            if (rightChild.left != null)
+            if (rightChild.left != Nil)
             {
                 rightChild.left.parent = parent;
             }
@@ -184,59 +198,60 @@ namespace RedBlackTree
             parent.parent = rightChild;
         }
 
-        public void rebuildAfterInsert(ref TreeNode tempNode)
+        public void rebuildAfterInsert(ref TreeNode tempNode,ref TreeNode X)
         {
-            while(tempNode != root && string.Equals(tempNode.parent.color,"RED"))
+            while(X != root && string.Equals(X.parent.color,"RED"))
             {
-                if(tempNode.parent == tempNode.parent.parent.left)
+                if(X.parent == X.parent.parent.left)
                 {
-                    TreeNode uncle = tempNode.parent.parent.right;
+                    TreeNode uncle = X.parent.parent.right;
 
                     if(string.Equals(uncle.color,"RED"))
                     {
-                        tempNode.color = "BLACK";
+                        X.parent.color = "BLACK";
                         uncle.color = "BLACK";
-                        tempNode.parent.parent.color = "RED";
+                        X.parent.parent.color = "RED";
 
-                        tempNode = tempNode.parent.parent;
+                        X = X.parent.parent;
                     }
                     else
                     {
-                        if(tempNode == tempNode.parent.right)
+                        if(X == X.parent.right)
                         {
-                            tempNode = tempNode.parent;
-                            rotateLeft(ref tempNode);
+                            X = X.parent;
+                            rotateLeft(ref tempNode,ref X);
                         }
 
                         tempNode.parent.color = "BLACK";
                         tempNode.parent.parent.color = "RED";
 
-                        rotateRight(ref tempNode.parent.parent);
+                        rotateRight(ref tempNode,ref X);
                     }
                 }
                 else
                 {
-                    TreeNode uncle = tempNode.parent.parent.left;
+                    TreeNode uncle = X.parent.parent.left;
 
                     if(string.Equals(uncle.color,"RED"))
                     {
-                        tempNode.parent.color = "BLACK";
+                        X.parent.color = "BLACK";
                         uncle.color = "BLACK";
-                        tempNode.parent.parent.color = "RED";
+                        X.parent.parent.color = "RED";
 
-                        tempNode = tempNode.parent.parent;
+                        X = X.parent.parent;
                     }
                     else
                     {
-                        if(tempNode == tempNode.parent.left)
+                        if(X == X.parent.left)
                         {
-                            tempNode = tempNode.parent;
-                            rotateRight(ref tempNode);
+                            X = X.parent;
+                            rotateRight(ref tempNode, ref X);
                         }
 
-                        tempNode.parent.color = "BLACK";
-                        tempNode.parent.parent.color = "RED";
-                        rotateLeft(ref tempNode.parent.parent);
+                        X.parent.color = "BLACK";
+                        X.parent.parent.color = "RED";
+
+                        rotateLeft(ref tempNode, ref X.parent.parent);
                     }
                 }
             }
@@ -244,7 +259,7 @@ namespace RedBlackTree
             root.color = "BLACK";
         }
 
-        public TreeNode removeNode(ref TreeNode rTempNode, ref TreeNode tempNode, int data)
+        public TreeNode removeNode(ref TreeNode tempNode, int data)
         {
             TreeNode removed = null;
             TreeNode successor = null;
@@ -255,7 +270,7 @@ namespace RedBlackTree
                 return null;
             }
 
-            if(target.left==null || target.right == null)
+            if(target.left==Nil || target.right == Nil)
             {
                 removed = target;
             }
@@ -265,7 +280,7 @@ namespace RedBlackTree
                 target.val = removed.val;
             }
 
-            if(removed.left != null)
+            if(removed.left != Nil)
             {
                 successor = removed.left;
             }
@@ -294,13 +309,13 @@ namespace RedBlackTree
 
             if(string.Equals(removed.color,"BLACK"))
             {
-                rebuildAfterRemove(ref successor);
+                rebuildAfterRemove(ref tempNode, ref successor);
             }
 
             return removed;
         }
 
-        public void rebuildAfterRemove(ref TreeNode successor)
+        public void rebuildAfterRemove(ref TreeNode tempNode, ref TreeNode successor)
         {
             TreeNode sibling = null;
 
@@ -314,7 +329,7 @@ namespace RedBlackTree
                     {
                         sibling.color = "BLACK";
                         successor.parent.color = "RED";
-                        rotateLeft(ref successor.parent);
+                        rotateLeft(ref tempNode,ref successor.parent);
                     }
                     else
                     {
@@ -330,15 +345,15 @@ namespace RedBlackTree
                                 sibling.left.color = "BLACK";
                                 sibling.color = "RED";
 
-                                rotateRight(ref sibling);
+                                rotateRight(ref tempNode, ref sibling);
                                 sibling = successor.parent.right;
                             }
 
                             sibling.color = successor.parent.color;
                             successor.parent.color = "BLACK";
                             sibling.right.color = "BLACK";
-                            rotateLeft(ref successor.parent);
-                            successor = root;
+                            rotateLeft(ref tempNode, ref successor.parent);
+                            successor = tempNode;
                         }
                     }
                 }
@@ -350,7 +365,7 @@ namespace RedBlackTree
                     {
                         sibling.color = "BLACK";
                         successor.parent.color = "RED";
-                        rotateRight(ref successor.parent);
+                        rotateRight(ref tempNode, ref successor.parent);
                     }
                     else
                     {
@@ -366,15 +381,15 @@ namespace RedBlackTree
                                 sibling.right.color = "BLACK";
                                 sibling.color = "RED";
 
-                                rotateLeft(ref sibling);
+                                rotateLeft(ref tempNode, ref sibling);
                                 sibling = successor.parent.left;
                             }
 
                             sibling.color = successor.parent.color;
                             successor.parent.color = "BLACK";
                             sibling.left.color = "BLACK";
-                            rotateRight(ref successor.parent);
-                            successor = root;
+                            rotateRight(ref tempNode, ref successor.parent);
+                            successor = tempNode;
                         }
                     }
                 }
@@ -389,7 +404,7 @@ namespace RedBlackTree
             int v = -1;
             string  cnt = "";
           
-            if(tempNode == null)
+            if(tempNode == null||tempNode==Nil)
             {
                 return;
             }
@@ -413,7 +428,7 @@ namespace RedBlackTree
                 }
             }
 
-            if(tempNode.left == null && tempNode.right == null)
+            if(tempNode.left == Nil && tempNode.right == Nil)
             {
                 cnt = "---------- " + (blackCount + "");
             }
@@ -457,18 +472,16 @@ namespace RedBlackTree
 
         static void Main(string[] args)
         {
-            /*
+            
             RBTree rbt = new RBTree();
-            TreeNode tempNode = null;
-
-            for (int i = 0; i < 100; i++)
+           
+            for (int i = 0; i < 3; i++)
             {
-                tempNode = new TreeNode(i + 1);
-                rbt.insertNode(ref rbt.root, ref tempNode);
+                rbt.insertNode(ref rbt.root, i+1);
             }
 
             rbt.printTree(ref rbt.root, 0, 0);
-            */
+            
             /*
             MyClass source = new MyClass();
 
@@ -481,10 +494,10 @@ namespace RedBlackTree
 
             Console.WriteLine("{0} {1}", source.MyField1, source.MyField2);
             Console.WriteLine("{0} {1}", target.MyField1, target.MyField2);*/
-
+            /*
             Derived dv = new Derived();
             dv.BaseMethod();
-
+            */
         }
     }
 }
