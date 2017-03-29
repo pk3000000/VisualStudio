@@ -244,48 +244,247 @@ namespace RedBlackTree
             root.color = "BLACK";
         }
 
-        public void search(ref TreeNode tempNode, int val)
+        public TreeNode removeNode(ref TreeNode rTempNode, ref TreeNode tempNode, int data)
         {
-            if (tempNode == null)
+            TreeNode removed = null;
+            TreeNode successor = null;
+            TreeNode target = searchNode(ref tempNode, data);
+
+            if(target == null)
             {
-                return;
+                return null;
             }
 
-            if (tempNode.val > val)
+            if(target.left==null || target.right == null)
             {
-                search(ref tempNode.left, val);
+                removed = target;
+            }
+            else
+            {
+                removed = searchMinNode(ref target.right);
+                target.val = removed.val;
             }
 
-            if (tempNode.val == val)
+            if(removed.left != null)
             {
-                Console.WriteLine("{0} found", val);
-                Console.WriteLine("{0} ", tempNode.color);
-                return;
+                successor = removed.left;
+            }
+            else
+            {
+                successor = removed.right;
             }
 
-            if (tempNode.val < val)
+            successor.parent = removed.parent;
+
+            if(removed.parent == null)
             {
-                search(ref tempNode.right, val);
+                root = successor;
+            }
+            else
+            {
+                if(removed == removed.parent.left)
+                {
+                    removed.parent.left = successor;
+                }
+                else
+                {
+                    removed.parent.right = successor;
+                }
             }
 
+            if(string.Equals(removed.color,"BLACK"))
+            {
+                rebuildAfterRemove(ref successor);
+            }
 
+            return removed;
         }
 
+        public void rebuildAfterRemove(ref TreeNode successor)
+        {
+            TreeNode sibling = null;
+
+            while(successor.parent != null && string.Equals(successor.color,"BLACK"))
+            {
+                if (successor == successor.parent.left)
+                {
+                    sibling = successor.parent.right;
+
+                    if(string.Equals(sibling.color,"RED"))
+                    {
+                        sibling.color = "BLACK";
+                        successor.parent.color = "RED";
+                        rotateLeft(ref successor.parent);
+                    }
+                    else
+                    {
+                        if(string.Equals(sibling.left.color,"BLACK")&&string.Equals(sibling.right.color,"BLACK"))
+                        {
+                            sibling.color = "RED";
+                            successor = successor.parent;
+                        }
+                        else
+                        {
+                            if(string.Equals(sibling.left.color,"RED"))
+                            {
+                                sibling.left.color = "BLACK";
+                                sibling.color = "RED";
+
+                                rotateRight(ref sibling);
+                                sibling = successor.parent.right;
+                            }
+
+                            sibling.color = successor.parent.color;
+                            successor.parent.color = "BLACK";
+                            sibling.right.color = "BLACK";
+                            rotateLeft(ref successor.parent);
+                            successor = root;
+                        }
+                    }
+                }
+                else
+                {
+                    sibling = successor.parent.left;
+
+                    if(string.Equals(sibling.color,"RED"))
+                    {
+                        sibling.color = "BLACK";
+                        successor.parent.color = "RED";
+                        rotateRight(ref successor.parent);
+                    }
+                    else
+                    {
+                        if(string.Equals(sibling.right.color,"BLACK")&&string.Equals(sibling.left.color,"BLACK"))
+                        {
+                            sibling.color = "RED";
+                            successor = successor.parent;
+                        }
+                        else
+                        {
+                            if(string.Equals(sibling.right.color,"RED"))
+                            {
+                                sibling.right.color = "BLACK";
+                                sibling.color = "RED";
+
+                                rotateLeft(ref sibling);
+                                sibling = successor.parent.left;
+                            }
+
+                            sibling.color = successor.parent.color;
+                            successor.parent.color = "BLACK";
+                            sibling.left.color = "BLACK";
+                            rotateRight(ref successor.parent);
+                            successor = root;
+                        }
+                    }
+                }
+            }
+            successor.color = "BLACK";
+        }
+
+        public void printTree(ref TreeNode tempNode, int depth, int blackCount)
+        {
+            int i = 0;
+            char c = 'X';
+            int v = -1;
+            string  cnt = "";
+          
+            if(tempNode == null)
+            {
+                return;
+            }
+
+            if(string.Equals(tempNode.color,"BLACK"))
+            {
+                blackCount++;
+            }
+
+            if(tempNode.parent != null)
+            {
+                v = tempNode.parent.val;
+
+                if (tempNode.parent.left == tempNode)
+                {
+                    c = 'L';
+                }
+                else
+                {
+                    c = 'R';
+                }
+            }
+
+            if(tempNode.left == null && tempNode.right == null)
+            {
+                cnt = "---------- " + (blackCount + "");
+            }
+            else
+            {
+                cnt = "";
+            }
+
+            for(i=0;i<depth;i++)
+            {
+                Console.Write("  ");
+            }
+
+            Console.WriteLine("{0} {1} [{2},{3}] {4}", tempNode.val, (string.Equals(tempNode.color, "RED") ? "RED" : "BLACK"), c, v, cnt);
+
+            printTree(ref tempNode.left, depth + 1, blackCount);
+            printTree(ref tempNode.right, depth + 1, blackCount);
+        }
     }
 
     class Program
     {
+        class MyClass
+        {
+            public int MyField1;
+            public int MyField2;
+        }
+
+        class Base
+        {
+            public void BaseMethod()
+            {
+                Console.WriteLine("BaseMethod");
+            }
+        }
+
+        class Derived : Base
+        {
+
+        }
+
         static void Main(string[] args)
         {
+            /*
             RBTree rbt = new RBTree();
+            TreeNode tempNode = null;
 
             for (int i = 0; i < 100; i++)
             {
-               // rbt.insert(i+1);
+                tempNode = new TreeNode(i + 1);
+                rbt.insertNode(ref rbt.root, ref tempNode);
             }
 
-            rbt.search(ref rbt.root, 3);
-            
+            rbt.printTree(ref rbt.root, 0, 0);
+            */
+            /*
+            MyClass source = new MyClass();
+
+            source.MyField1 = 10;
+            source.MyField2 = 20;
+
+            MyClass target = source;
+
+            target.MyField2 = 30;
+
+            Console.WriteLine("{0} {1}", source.MyField1, source.MyField2);
+            Console.WriteLine("{0} {1}", target.MyField1, target.MyField2);*/
+
+            Derived dv = new Derived();
+            dv.BaseMethod();
+
         }
     }
 }
