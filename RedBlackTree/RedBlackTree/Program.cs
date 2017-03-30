@@ -44,39 +44,39 @@ namespace RedBlackTree
         public  TreeNode searchNode(ref TreeNode tempNode, int val)
         { 
 
-            if(root == Nil)
+            if(tempNode == Nil) // Nil이면 null 리턴
             {
                 return null;
             }
 
-            if(tempNode.val > val)
+            if(tempNode.val > val)  // 작으면 왼쪽
             {
                 return searchNode(ref tempNode.left, val);
             }
-            else if(tempNode.val < val)
+            else if(tempNode.val < val) // 크면 오른쪽
             {
                 return searchNode(ref tempNode.right, val);
             }
             else
             {
-                return tempNode;
+                return tempNode;    // 같으면 노드를 리턴
             }
         }
 
         public TreeNode searchMinNode(ref TreeNode tempNode)
         {
-            if(tempNode == Nil)
+            if(tempNode == Nil)     // 노드가 Nil이면 Nil 리턴
             {
                 return Nil;
             }
 
-            if(tempNode.left == Nil)
+            if(tempNode.left == Nil)    // 노드의 왼쪽이 Nil이면 tempNode가 제일 작은 수 
             {
                 return tempNode;
             }
             else
             {
-                return searchMinNode(ref tempNode.left);
+                return searchMinNode(ref tempNode.left);    // 왼쪽으로 파고 든다.
             }
         }
 
@@ -109,98 +109,98 @@ namespace RedBlackTree
                 root = newNode;
             }
 
-            if(tempNode.val < newNode.val)
+            if(tempNode.val < newNode.val)  // 크면 오른쪽 작으면 왼쪽
             {
-                if(tempNode.right == Nil)
+                if(tempNode.right == Nil)   // right가 Nil이면 오른쪽에 붙여준다.
                 {
                     tempNode.right = newNode;
                     newNode.parent = tempNode;
                 }
                 else
                 {
-                    insertNodeHelper(ref tempNode.right, ref newNode);
+                    insertNodeHelper(ref tempNode.right, ref newNode);  // right가 Nil이 아니면 오른쪽으로 접근
                 }
             }
             else if(tempNode.val > newNode.val)
             {
-                if (tempNode.left == Nil)
+                if (tempNode.left == Nil)   // left가 Nil이면 왼쪽에 붙여준다.
                 {
                     tempNode.left = newNode;
                     newNode.parent = tempNode;
                 }
                 else
                 {
-                    insertNodeHelper(ref tempNode.left, ref newNode);
+                    insertNodeHelper(ref tempNode.left, ref newNode);   // left가 Nil이 아니면 왼쪽으로 접근
                 }
             }
         }
 
         public void rotateRight(TreeNode tempNode, TreeNode parent)
         {
-            TreeNode leftChild = parent.left;
+            TreeNode leftChild = parent.left;           // 
 
-            parent.left = leftChild.right;
+            parent.left = leftChild.right;              // 왼쪽 자식의 오른쪽 자식을 기준 노드의 left에 붙여준다.
 
-            if(leftChild.right != Nil)
+            if(leftChild.right != Nil)                  // 왼쪽 자식의 오른쪽 자신이 Nil이 아니면 부모를 기준 노드로 설정
             {
                 leftChild.right.parent = parent;
             }
 
 
-            leftChild.parent = parent.parent;
+            leftChild.parent = parent.parent;           // 왼쪽 자식의 부모는 기준 노드의 부모로
 
-            if (parent.parent == null)
+            if (parent.parent == null)                  // 기준 노드의 부모가 null이면 루트 노드
             {
                 root = leftChild;
             }
             else
-            {
-                if(parent == parent.parent.left)
+            {                                           // root 노드가 아니고
+                if(parent == parent.parent.left)        // 부모 노드의 왼쪽이 기준 노드이면
                 {
-                    parent.parent.left = leftChild;
+                    parent.parent.left = leftChild;     // 왼쪽에 왼쪽 자식을 붙인다.
                 }
                 else
                 {
-                    parent.parent.right = leftChild;
+                    parent.parent.right = leftChild;    // 오른쪽이 기준 노드이면 오른쪽에 붙인다.
                 }
             }
 
-            leftChild.right = parent;
-            parent.parent = leftChild;
+            leftChild.right = parent;                   // 왼쪽 자식의 오른쪽에 기준 노드를 붙이고
+            parent.parent = leftChild;                  // 기준 노드의 부모를 왼쪽 자식으로 해준다.
         }
 
         public void rotateLeft(TreeNode tempNode, TreeNode parent)
         {
             TreeNode rightChild = parent.right;
 
-            parent.right = rightChild.left;
+            parent.right = rightChild.left;             // 기준 노드의 오른쪽에 오른쪽 자식의 왼쪽 노드를 붙인다.
 
-            if (rightChild.left != Nil)
+            if (rightChild.left != Nil)                 // 오른쪽 자식의 왼쪽 노드가 Nil이 아니면
             {
-                rightChild.left.parent = parent;
+                rightChild.left.parent = parent;        // 오른쪽 자식의 왼쪽 노드의 부모를 기준 노드로 해준다.
             }
 
 
-            rightChild.parent = parent.parent;
+            rightChild.parent = parent.parent;          // 오른쪽 자식의 부모 노드를 기준 노드의 부모로 설정
 
-            if (parent.parent == null)
+            if (parent.parent == null)                  // 기준 노드가 root 이면 오른쪽 자식을 root로 설정
             {
                 root = rightChild;
             }
             else
-            {
-                if (parent == parent.parent.left)
+            {                                           // root가 아니면
+                if (parent == parent.parent.left)       // 기준 노드가 부모의 왼쪽 자식이면
                 {
-                    parent.parent.left = rightChild;
+                    parent.parent.left = rightChild;    // 기준 노드의 부모 노드의 왼쪽에 오른쪽 자식을 붙여준다.
                 }
                 else
-                {
-                    parent.parent.right = rightChild;
+                {                                       // 부모 노드의 오른쪽 자식이면
+                    parent.parent.right = rightChild;   // 오른쪽에 오른쪽 자식을 붙여준다.
                 }
             }
 
-            rightChild.left = parent;
-            parent.parent = rightChild;
+            rightChild.left = parent;                   // 오른쪽 자식의 왼쪽에 기준 노드를 붙이고
+            parent.parent = rightChild;                 // 기준 노드의 부모 노드를 오른쪽 자식으로 설정
         }
 
         public void rebuildAfterInsert(ref TreeNode tempNode,ref TreeNode X)        // balancing
@@ -230,33 +230,33 @@ namespace RedBlackTree
                         X.parent.color = "BLACK";    // 부모는 "BLACK"
                         X.parent.parent.color = "RED"; // Grand Parent는 "RED"
 
-                        rotateRight(tempNode,X.parent.parent);  // 오른쪽 회전
+                        rotateRight(tempNode,X.parent.parent);  // X Grand Parent 기준으로 오른쪽 회전
                     }
                 }
                 else
-                {
-                    TreeNode uncle = X.parent.parent.left;
+                {   // 부모 노드가 right
+                    TreeNode uncle = X.parent.parent.left;      // 삼촌 노드가 Left
 
-                    if(string.Equals(uncle.color,"RED"))
+                    if(string.Equals(uncle.color,"RED"))        // 삼촌 노드가 "RED"
                     {
-                        X.parent.color = "BLACK";
-                        uncle.color = "BLACK";
-                        X.parent.parent.color = "RED";
+                        X.parent.color = "BLACK";               // 부모 노드를 "BLACK"
+                        uncle.color = "BLACK";                  // 삼촌 노드를 "BLACK"
+                        X.parent.parent.color = "RED";          // Grand Parent의 노드를 "RED"
 
-                        X = X.parent.parent;
+                        X = X.parent.parent;                    // X는 Grand Parent
                     }
                     else
-                    {
-                        if(X == X.parent.left)
+                    {                                           // 삼촌 노드가 "BLACK"
+                        if(X == X.parent.left)                  // X가 왼쪽 자식이면
                         {
-                            X = X.parent;
-                            rotateRight(tempNode, X);
+                            X = X.parent;                       // X를 X의 부모로
+                            rotateRight(tempNode, X);           // 오른쪽 회전
                         }
 
-                        X.parent.color = "BLACK";
-                        X.parent.parent.color = "RED";
+                        X.parent.color = "BLACK";               // X 부모의 색깔을 "BLACK"
+                        X.parent.parent.color = "RED";          // X Grand Parent 색깔을 "RED"
 
-                        rotateLeft(tempNode, X.parent.parent);
+                        rotateLeft(tempNode, X.parent.parent);  // X Grand Parent 기준으로 왼쪽 회전
                     }
                 }
             }
@@ -268,138 +268,138 @@ namespace RedBlackTree
         {
             TreeNode removed = null;
             TreeNode successor = null;
-            TreeNode target = searchNode(ref tempNode, data);
+            TreeNode target = searchNode(ref tempNode, data);       // 타겟 노드를 찾음
 
-            if(target == null)
+            if(target == null)                                      // 없으면 null값 리턴
             {
                 return null;
             }
 
-            if(target.left==Nil || target.right == Nil)
+            if(target.left==Nil || target.right == Nil)             // target의 Left나 right가 Nil이면 단말노드 이므로 지울 노드를 target으로 설정
             {
                 removed = target;
             }
             else
-            {
+            {                                                       // 아니면 오른쪽에서 가장 작은 수를 찾는다.
                 removed = searchMinNode(ref target.right);
-                target.val = removed.val;
+                target.val = removed.val;                           // target 값을 지울 값으로 설정
             }
 
-            if(removed.left != Nil)
+            if(removed.left != Nil)                                 // 지울 노드의 left가 Nil이 아니면 successor를 지울 노드의 왼쪽으로 설정.
             {
                 successor = removed.left;
             }
             else
-            {
+            {                                                       // 오른쪽이 Nil이 아니면 오른쪽으로 설정
                 successor = removed.right;
             }
 
-            successor.parent = removed.parent;
+            successor.parent = removed.parent;                      // successor의 부모를 지울 노드의 부모로 설정
 
-            if(removed.parent == null)
+            if(removed.parent == null)                              // 지울 노드의 부모가 null이면 successor를 루트로 지정
             {
                 root = successor;
             }
             else
             {
-                if(removed == removed.parent.left)
+                if(removed == removed.parent.left)                  // 지울 노드가 부모의 왼쪽 자식이면
                 {
-                    removed.parent.left = successor;
+                    removed.parent.left = successor;                // 지울 노드의 부모의 왼쪽에 successor를 붙인다.
                 }
                 else
-                {
-                    removed.parent.right = successor;
+                {                                                   // 오른쪽 자식이면
+                    removed.parent.right = successor;               // 지울 노드의 부모의 오른쪽에 successor를 붙인다.
                 }
             }
 
-            if(string.Equals(removed.color,"BLACK"))
+            if(string.Equals(removed.color,"BLACK"))                // 지울 노드가 "BLACK"이면
             {
-                rebuildAfterRemove(ref tempNode, ref successor);
+                rebuildAfterRemove(ref tempNode, ref successor);    // successor를 기준으로 rebuild
             }
 
-            return removed;
+            return removed;                                         // 지울 자식을 return
         }
 
         public void rebuildAfterRemove(ref TreeNode tempNode, ref TreeNode successor)
         {
             TreeNode sibling = null;
 
-            while(successor.parent != null && string.Equals(successor.color,"BLACK"))
+            while(successor.parent != null && string.Equals(successor.color,"BLACK"))   // 기준 노드의 부모가 null이 아니고 기준 노드가 "BLACK"이면
             {
-                if (successor == successor.parent.left)
+                if (successor == successor.parent.left)                                 // successor가 부모의 왼쪽 자식이면
                 {
-                    sibling = successor.parent.right;
+                    sibling = successor.parent.right;                                   // sibling에 기준 노드의 삼촌 노드를 대입
 
-                    if(string.Equals(sibling.color,"RED"))
+                    if(string.Equals(sibling.color,"RED"))                              // 삼촌 노드가 "RED"이면
                     {
-                        sibling.color = "BLACK";
-                        successor.parent.color = "RED";
-                        rotateLeft(tempNode,successor.parent);
+                        sibling.color = "BLACK";                                        // 삼촌 노드를 "BLACK"으로 변경
+                        successor.parent.color = "RED";                                 // 기준 노드의 부모의 색을 "RED"로 변경
+                        rotateLeft(tempNode,successor.parent);                          // 기준 노드의 부모를 기준으로 왼쪽 회전
                     }
                     else
                     {
-                        if(string.Equals(sibling.left.color,"BLACK")&&string.Equals(sibling.right.color,"BLACK"))
-                        {
-                            sibling.color = "RED";
-                            successor = successor.parent;
+                        if(string.Equals(sibling.left.color,"BLACK")&&string.Equals(sibling.right.color,"BLACK"))   // 삼촌 노드의 왼쪽 자식의 색이 "BLACK"이고
+                        {                                                                                           // 삼촌 노드의 오른쪽 자식의 색이 "BLACK"이면
+                            sibling.color = "RED";                                                                  // 삼촌 노드의 색을 "RED"로
+                            successor = successor.parent;                                                           // 기준 노드를 기준 노드의 부모로
                         }
                         else
                         {
-                            if(string.Equals(sibling.left.color,"RED"))
+                            if(string.Equals(sibling.left.color,"RED"))                                             // 삼촌 노드의 왼쪽 자식이 "RED"이면
                             {
-                                sibling.left.color = "BLACK";
-                                sibling.color = "RED";
+                                sibling.left.color = "BLACK";                                                       // 삼촌 노드의 왼쪽 자식의 색을 "BLACK"으로
+                                sibling.color = "RED";                                                              // 삼촌 노드를 "RED"로
 
-                                rotateRight(tempNode, sibling);
-                                sibling = successor.parent.right;
+                                rotateRight(tempNode, sibling);                                                     // 삼촌 노드를 기준으로 오른쪽 회전
+                                sibling = successor.parent.right;                                                   // 삼촌 노드를 다시 대입
                             }
 
-                            sibling.color = successor.parent.color;
-                            successor.parent.color = "BLACK";
-                            sibling.right.color = "BLACK";
-                            rotateLeft(tempNode, successor.parent);
-                            successor = tempNode;
+                            sibling.color = successor.parent.color;                                                 // 삼촌 노드의 색을 기준 노드의 부모의 색으로 변경
+                            successor.parent.color = "BLACK";                                                       // 기준 노드의 부모의 색을 "BLACK"
+                            sibling.right.color = "BLACK";                                                          // 삼촌 노드의 오른쪽 자식의 색을 "BLACK"
+                            rotateLeft(tempNode, successor.parent);                                                 // 기준 노드의 부모를 기준으로 왼쪽 회전
+                            successor = tempNode;                                                                   // 기준 노드를 루트 노드로
                         }
                     }
                 }
                 else
-                {
-                    sibling = successor.parent.left;
+                {                                                                                                    // 기준 노드가 오른쪽 자식이면
+                    sibling = successor.parent.left;                                                                 // 삼촌 노드가 왼쪽 자식
 
-                    if(string.Equals(sibling.color,"RED"))
+                    if(string.Equals(sibling.color,"RED"))                                                           // 삼촌 노드가 "RED"이면
                     {
-                        sibling.color = "BLACK";
-                        successor.parent.color = "RED";
-                        rotateRight(tempNode, successor.parent);
+                        sibling.color = "BLACK";                                                                     // "BLACK"으로 변경
+                        successor.parent.color = "RED";                                                              // 기준 노드의 부모를 "RED"로
+                        rotateRight(tempNode, successor.parent);                                                     // 기준 노드의 부모를 기준으로 오른쪽 회전
                     }
                     else
-                    {
-                        if(string.Equals(sibling.right.color,"BLACK")&&string.Equals(sibling.left.color,"BLACK"))
+                    {                                                                                               // 삼촌 노드가 "BLACK"이면
+                        if(string.Equals(sibling.right.color,"BLACK")&&string.Equals(sibling.left.color,"BLACK"))   // 삼촌의 자식들이 모두 "BLACK"이면
                         {
-                            sibling.color = "RED";
-                            successor = successor.parent;
+                            sibling.color = "RED";                                                                  // 삼촌의 색을 "RED"로
+                            successor = successor.parent;                                                           // 기준 노드를 기준 노드의 부모로
                         }
                         else
-                        {
-                            if(string.Equals(sibling.right.color,"RED"))
+                        {                                                                                           // 
+                            if(string.Equals(sibling.right.color,"RED"))                                            // 삼촌 노드의 오른쪽 자식이 "RED"이면
                             {
-                                sibling.right.color = "BLACK";
-                                sibling.color = "RED";
+                                sibling.right.color = "BLACK";                                                      // 삼촌 노드의 오른쪽자식의 색을 "BLACK"으로
+                                sibling.color = "RED";                                                              // 삼촌 노드의 색을 "RED"로
 
-                                rotateLeft(tempNode, sibling);
-                                sibling = successor.parent.left;
+                                rotateLeft(tempNode, sibling);                                                      // 삼촌 노드를 기준으로 왼쪽 회전
+                                sibling = successor.parent.left;                                                    // 삼촌 노드를 재설정
                             }
 
-                            sibling.color = successor.parent.color;
-                            successor.parent.color = "BLACK";
-                            sibling.left.color = "BLACK";
-                            rotateRight(tempNode, successor.parent);
-                            successor = tempNode;
+                            sibling.color = successor.parent.color;                                                 // 삼촌 노드의 색을 기준 노드의 부모의 색과 같게 하고
+                            successor.parent.color = "BLACK";                                                       // 기준 노드의 부모의 색을 "BLACK"으로
+                            sibling.left.color = "BLACK";                                                           // 삼촌 노드의 왼쪽 자식의 색을 "BLACK"으로
+                            rotateRight(tempNode, successor.parent);                                                // 기준 노드의 부모를 기준으로 오른쪽 회전
+                            successor = tempNode;                                                                   // 기준 노드를 루트 노드로
                         }
                     }
                 }
             }
-            successor.color = "BLACK";
+            successor.color = "BLACK";                                                                              // 루트 노드는 "BLACK"
         }
 
         public void printTree(TreeNode tempNode, int depth, int blackCount)
