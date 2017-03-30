@@ -11,6 +11,7 @@ namespace ConsoleApplication14
     enum MoveType { SEA=1,LAND=2,COSMOS=4}; // 환경 타입
     enum RobotSize { S,M,L };       // 로봇 크기
     enum Terrain {S,A,B,C,D};                // 지형
+
     class Weapon        // 무기
     {
         string name;    // 기술 이름
