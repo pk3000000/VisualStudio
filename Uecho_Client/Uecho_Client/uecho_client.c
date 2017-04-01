@@ -42,7 +42,10 @@ int main()
 			break;
 		}
 
+		printf("%s\n", message);
+
 		send(sock, message, strlen(message), 0);
+
 		strLen = recv(sock, message, sizeof(message) - 1, 0);
 		message[strLen] = 0;
 		printf("Message fromserver: %s", message);

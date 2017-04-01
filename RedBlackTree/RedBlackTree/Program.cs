@@ -480,14 +480,14 @@ namespace RedBlackTree
 
             RBTree rbt = new RBTree();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 8; i++)
             {
                 rbt.insertNode(ref rbt.root, i + 1);
             }
 
             rbt.printTree(rbt.root,0,0);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 rbt.removeNode(ref rbt.root, i + 1);
             }
