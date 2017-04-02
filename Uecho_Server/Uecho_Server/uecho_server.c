@@ -41,9 +41,20 @@ int main()
 
 	while (1)
 	{
+
 		clntAdrSz = sizeof(clntAdr);
 		strLen = recvfrom(servSock, message, BUF_SIZE, 0,
 			(SOCKADDR*)&clntAdr, &clntAdrSz);
+		message[strLen] = 0;
+		printf("Message fromclient: %s", message);
+
+		fputs("Input message(q to quit): ", stdout);
+		fgets(message, sizeof(message), stdin);
+		if (!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
+		{
+			break;
+		}
+		printf("%s\n", message);
 		sendto(servSock, message, strLen, 0,
 			(SOCKADDR*)&clntAdr, sizeof(clntAdr));
 	}

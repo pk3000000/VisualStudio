@@ -30,7 +30,7 @@ int main()
 	memset(&servAdr, 0, sizeof(servAdr));
 	servAdr.sin_family = AF_INET;
 	servAdr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	servAdr.sin_port = htons(atoi("9090"));
+	servAdr.sin_port = htons(atoi("9191"));
 
 	if (connect(hSocket, (SOCKADDR*)&servAdr, sizeof(servAdr)) == SOCKET_ERROR)
 	{
